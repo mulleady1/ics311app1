@@ -9,18 +9,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class Driver {
+public class Driver implements Const {
 
     private static String[] names;
     private static Map<String, List> dict;
-    private static final String RUNTEST = "runtest";
-    private static final String INSERT  = "insert";
-    private static final String SEARCH  = "search";
-    private static final String DELETE  = "delete";
-    private static final String PRED    = "pred";
-    private static final String SUCC    = "succ";
-    private static final String MAX     = "max";
-    private static final String MIN     = "min";
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -109,7 +101,7 @@ public class Driver {
         Random rand = new Random();
         List<Long> searchTimes = new ArrayList<Long>();
         // For loop for 'search'.
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < LIMIT; i++) {
             int randomInt = rand.nextInt(names.length);
             KeyType k = new KeyType(names[randomInt]);
             start = System.nanoTime();
@@ -219,7 +211,7 @@ public class Driver {
         List runTimes = dict.get(functionName);
         long min, max, avg = 0;
         min = max = (long)runTimes.get(0);
-        int limit = loopEntireArray ? runTimes.size() : 10;
+        int limit = loopEntireArray ? runTimes.size() : LIMIT;
         for (int i = 1; i < limit; i++) {
             long time = (long)runTimes.get(i);
             if (time < min)
@@ -262,6 +254,8 @@ public class Driver {
         log("---------------------------------------------------------");
         log("maximum     | "+max+"  |          |          |          |");
         log("---------------------------------------------------------");
+
+        dict.clear();
     }
 
     private static void log(Object o) {
