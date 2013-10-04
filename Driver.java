@@ -4,11 +4,23 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 public class Driver {
 
     private static String[] names;
+    private static Map<String, List> dict;
+    private static final String RUNTEST = "runtest";
+    private static final String INSERT  = "insert";
+    private static final String SEARCH  = "search";
+    private static final String DELETE  = "delete";
+    private static final String PRED    = "pred";
+    private static final String SUCC    = "succ";
+    private static final String MAX     = "max";
+    private static final String MIN     = "min";
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -17,6 +29,8 @@ public class Driver {
         }
         // Load names into array.
         loadData(args[0]);
+        // Create a map for organizing output.
+        dict = new HashMap<String, List>();
         Scanner scan = new Scanner(System.in);
         try {
             // App interface.
@@ -38,33 +52,33 @@ public class Driver {
         if (input.equals("q")) {
             quit();
         }
-        else if (input.equals("runtest")) {
+        else if (input.equals(RUNTEST)) {
             runtest();
         }
-        else if (input.equals("insert")) {
+        else if (input.equals(INSERT)) {
             System.out.print("Enter key to be inserted: ");
             insert(scan.nextLine());
         }
-        else if (input.equals("search")) {
+        else if (input.equals(SEARCH)) {
             System.out.print("Enter key to be searched: ");
             search(scan.nextLine());
         }
-        else if (input.equals("delete")) {
+        else if (input.equals(DELETE)) {
             System.out.print("Enter key to be deleted: ");
             delete(scan.nextLine());
         }
-        else if (input.equals("pred")) {
+        else if (input.equals(PRED)) {
             System.out.print("Enter key to find predecessor of: ");
             pred(scan.nextLine());
         }
-        else if (input.equals("succ")) {
+        else if (input.equals(SUCC)) {
             System.out.print("Enter key to find successor of: ");
             succ(scan.nextLine());
         }
-        else if (input.equals("min")) {
+        else if (input.equals(MIN)) {
             min();
         }
-        else if (input.equals("max")) {
+        else if (input.equals(MAX)) {
             max();
         }
         else {
@@ -74,13 +88,76 @@ public class Driver {
     }
 
     private static void runtest() {
+        // List for storing returned keys.
+        List<Object> keyTypes = new ArrayList<Object>();
+        // long variables for timing method calls.
+        long start, runtime;
+        // List for storing runtimes.
+        List<Long> insertTimes = new ArrayList<Long>();
+        // First DynamicSet is the linked list implementation.
         DynamicSet ds = new DLLDynamicSet();
+        // For loop for 'insert'.
         for (int i = 0; i < names.length; i++) {
             KeyType k = new KeyType(names[i]);
+            start = System.nanoTime();
             ds.insert(k, null);
+            runtime = System.nanoTime() - start;
+            insertTimes.add(runtime);
         }
-        log(ds);
+        // Add 'insert' runtimes to map.
+        dict.put(INSERT, insertTimes);
+        Random rand = new Random();
+        List<Long> searchTimes = new ArrayList<Long>();
+        // For loop for 'search'.
+        for (int i = 0; i < 10; i++) {
+            int randomInt = rand.nextInt(names.length);
+            KeyType k = new KeyType(names[randomInt]);
+            start = System.nanoTime();
+            Object o = ds.search(k);
+            runtime = System.nanoTime() - start;
+            searchTimes.add(runtime);
+            keyTypes.add(o);
+        }
+        // Add 'search' runtimes to map.
+        dict.put(SEARCH, searchTimes);
+        List<Long> predTimes = new ArrayList<Long>();
+        // For loop for 'pred'.
+        for (int i = 0; i < keyTypes.size(); i++) {
+            KeyType k = (KeyType)keyTypes.get(i);
+            start = System.nanoTime();
+            ds.predecessor(k);
+            runtime = System.nanoTime() - start;
+            predTimes.add(runtime);
+        }
+        // Add 'pred' runtimes to map.
+        dict.put(PRED, predTimes);
+        List<Long> succTimes = new ArrayList<Long>();
+        // For loop for 'succ'.
+        for (int i = 0; i < keyTypes.size(); i++) {
+            KeyType k = (KeyType)keyTypes.get(i);
+            start = System.nanoTime();
+            ds.successor(k);
+            runtime = System.nanoTime() - start;
+            succTimes.add(runtime);
+        }
+        // Add 'succ' runtimes to map.
+        dict.put(SUCC, succTimes);
+        // Run min.
+        List<Long> minTimes = new ArrayList<Long>();
+        start = System.nanoTime();
+        ds.minimum();
+        runtime = System.nanoTime() - start;
+        minTimes.add(runtime);
+        dict.put(MIN, minTimes);
+        // Run max.
+        List<Long> maxTimes = new ArrayList<Long>();
+        start = System.nanoTime();
+        ds.maximum();
+        runtime = System.nanoTime() - start;
+        maxTimes.add(runtime);
+        dict.put(MAX, maxTimes);
 
+        printResults();
     }
 
     private static void insert(String key) {
@@ -138,22 +215,52 @@ public class Driver {
         }
     }
 
+    private static long[] computeResults(String functionName, boolean loopEntireArray) {
+        List runTimes = dict.get(functionName);
+        long min, max, avg = 0;
+        min = max = (long)runTimes.get(0);
+        int limit = loopEntireArray ? runTimes.size() : 10;
+        for (int i = 1; i < limit; i++) {
+            long time = (long)runTimes.get(i);
+            if (time < min)
+                min = time;
+            if (time > max)
+                max = time;
+            avg += time;
+        }
+        avg /= runTimes.size();
+        // Bad practice here: put min, max, & avg in an array and return it.
+        return new long[] { min, max, avg };
+    }
+
     private static void printResults() {
+        long[] insertResults = computeResults(INSERT, true);
+        long[] searchResults = computeResults(SEARCH, false);
+        long[] predResults   = computeResults(PRED, false);
+        long[] succResults   = computeResults(SUCC, false);
+
+        String insert = insertResults[0] + " / " + insertResults[1]  + " / " + insertResults[2];
+        String search = searchResults[0] + " / " + searchResults[1] + " / " + searchResults[2];
+        String pred   = predResults[0]   + " / " + predResults[1]    + " / " + predResults[2];
+        String succ   = succResults[0]   + " / " + succResults[1]    + " / " + succResults[2];
+        String min    = dict.get(MIN).get(0).toString();
+        String max    = dict.get(MAX).get(0).toString();
+
         log("Size: " + names.length);
         log("---------------------------------------------------------");
         log("            | LL       |  SK      |  BST     | RBT      |");
         log("---------------------------------------------------------");
-        log("insert      |          |          |          |          |");
+        log("insert      | "+insert+"  |          |          |          |");
         log("---------------------------------------------------------");
-        log("search      |          |          |          |          |");
+        log("search      | "+search+" |          |          |          |");
         log("---------------------------------------------------------");
-        log("predecessor |          |          |          |          |");
+        log("predecessor | "+pred+" |          |          |          |");
         log("---------------------------------------------------------");
-        log("successor   |          |          |          |          |");
+        log("successor   | "+succ+" |          |          |          |");
         log("---------------------------------------------------------");
-        log("minimum     |          |          |          |          |");
+        log("minimum     | "+min+"  |          |          |          |");
         log("---------------------------------------------------------");
-        log("maximum     |          |          |          |          |");
+        log("maximum     | "+max+"  |          |          |          |");
         log("---------------------------------------------------------");
     }
 

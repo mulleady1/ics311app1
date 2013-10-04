@@ -60,14 +60,20 @@ public class DLLDynamicSet implements DynamicSet {
     // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
         int i = this.nodes.indexOf(k);
-        return this.nodes.get(i+1);
+        if (i < this.nodes.size() - 1)
+            return this.nodes.get(i+1);
+        else
+            return null;
     }
 
     // Finds an Object that has the next smaller key in the set below k,
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
         int i = this.nodes.indexOf(k);
-        return this.nodes.get(i-1);
+        if (i > 0)
+            return this.nodes.get(i-1);
+        else
+            return null;
     }
 
     public String toString() {
