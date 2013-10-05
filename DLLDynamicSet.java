@@ -40,7 +40,7 @@ public class DLLDynamicSet implements DynamicSet {
     public Object search(KeyType k) {
         for (KeyType key : this.nodes)
             if (k.getValue().equals(key.getValue()))
-                return key.getValue();
+                return key;
         return null;
     }
                                                                    
@@ -65,7 +65,7 @@ public class DLLDynamicSet implements DynamicSet {
             if (k.getValue().equals(key.getValue())) {
                 int index = this.nodes.indexOf(key);
                 if (index < this.size()-1)
-                    return this.nodes.get(index+1).getValue();
+                    return this.nodes.get(index+1);
                 else 
                     return null;
             }
@@ -80,7 +80,7 @@ public class DLLDynamicSet implements DynamicSet {
             if (k.getValue().equals(key.getValue())) {
                 int index = this.nodes.indexOf(key);
                 if (index > 0)
-                    return this.nodes.get(index-1).getValue();
+                    return this.nodes.get(index-1);
                 else 
                     return null;
             }

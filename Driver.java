@@ -170,8 +170,9 @@ public class Driver implements Const {
 
     private static void search(String key) {
         for (DynamicSet ds : dynamicSets) {
-            Object o = ds.search(new KeyType(key));
-            log("search returned: " + o);
+            KeyType k = (KeyType)ds.search(new KeyType(key));
+            String val = k != null ? k.getValue() : "null";
+            log("search returned: " + val);
         }
     }
 
@@ -183,15 +184,17 @@ public class Driver implements Const {
 
     private static void pred(String key) {
         for (DynamicSet ds : dynamicSets) {
-            Object o = ds.predecessor(new KeyType(key));
-            log("pred returned: " + o);
+            KeyType k = (KeyType)ds.predecessor(new KeyType(key));
+            String val = k != null ? k.getValue() : "null";
+            log("pred returned: " + val);
         }
     }
 
     private static void succ(String key) {
         for (DynamicSet ds : dynamicSets) {
-            Object o = ds.successor(new KeyType(key));
-            log("succ returned: " + o);
+            KeyType k = (KeyType)ds.successor(new KeyType(key));
+            String val = k != null ? k.getValue() : "null";
+            log("succ returned: " + val);
         }
     }
 
