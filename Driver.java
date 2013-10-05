@@ -13,6 +13,7 @@ public class Driver implements Const {
 
     private static String[] names;
     private static Map<String, List> dict;
+    private static DynamicSet[] dynamicSets; 
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -24,10 +25,12 @@ public class Driver implements Const {
         // Create a map for organizing output.
         dict = new HashMap<String, List>();
         Scanner scan = new Scanner(System.in);
+        dynamicSets = new DynamicSet[NUM_DATA_STRUCTURES];
+        dynamicSets[0] = new DLLDynamicSet();
         try {
             // App interface.
             while (true) {
-                log("\nAvailable commands: runtest insert search delete pred succ min max");
+                log("\nAvailable commands: runtest insert search delete pred succ min max p");
                 log("Press q <Enter> to quit.");
                 System.out.print("Enter a command: ");
                 // Execute command.
@@ -73,6 +76,10 @@ public class Driver implements Const {
         else if (input.equals(MAX)) {
             max();
         }
+        else if (input.equals("p")) {
+            for (DynamicSet ds : dynamicSets)
+                log(ds.getClass() + ": " + ds);
+        }
         else {
             log("Unknown command.");
         }
@@ -80,92 +87,112 @@ public class Driver implements Const {
     }
 
     private static void runtest() {
-        // List for storing returned keys.
-        List<Object> keyTypes = new ArrayList<Object>();
-        // long variables for timing method calls.
-        long start, runtime;
-        // List for storing runtimes.
-        List<Long> insertTimes = new ArrayList<Long>();
-        // First DynamicSet is the linked list implementation.
-        DynamicSet ds = new DLLDynamicSet();
-        // For loop for 'insert'.
-        for (int i = 0; i < names.length; i++) {
-            KeyType k = new KeyType(names[i]);
+        // Loop through each implementation of DynamicSet.
+        for (int i = 0; i < dynamicSets.length; i++) {
+            // List for storing returned keys.
+            List<Object> keyTypes = new ArrayList<Object>();
+            // long variables for timing method calls.
+            long start, runtime;
+            // List for storing runtimes.
+            List<Long> insertTimes = new ArrayList<Long>();
+            // First DynamicSet is the linked list implementation.
+            DynamicSet ds = dynamicSets[i];
+            // For loop for 'insert'.
+            for (int j = 0; j < names.length; j++) {
+                KeyType k = new KeyType(names[j]);
+                start = System.nanoTime();
+                ds.insert(k, null);
+                runtime = System.nanoTime() - start;
+                insertTimes.add(runtime);
+            }
+            // Add 'insert' runtimes to map.
+            dict.put(INSERT+i, insertTimes);
+            Random rand = new Random();
+            List<Long> searchTimes = new ArrayList<Long>();
+            // For loop for 'search'.
+            for (int j = 0; j < LIMIT; j++) {
+                int randomInt = rand.nextInt(names.length);
+                KeyType k = new KeyType(names[randomInt]);
+                start = System.nanoTime();
+                Object o = ds.search(k);
+                runtime = System.nanoTime() - start;
+                searchTimes.add(runtime);
+                keyTypes.add(o);
+            }
+            // Add 'search' runtimes to map.
+            dict.put(SEARCH+i, searchTimes);
+            List<Long> predTimes = new ArrayList<Long>();
+            // For loop for 'pred'.
+            for (int j = 0; j < keyTypes.size(); j++) {
+                KeyType k = (KeyType)keyTypes.get(j);
+                start = System.nanoTime();
+                ds.predecessor(k);
+                runtime = System.nanoTime() - start;
+                predTimes.add(runtime);
+            }
+            // Add 'pred' runtimes to map.
+            dict.put(PRED+i, predTimes);
+            List<Long> succTimes = new ArrayList<Long>();
+            // For loop for 'succ'.
+            for (int j = 0; j < keyTypes.size(); j++) {
+                KeyType k = (KeyType)keyTypes.get(j);
+                start = System.nanoTime();
+                ds.successor(k);
+                runtime = System.nanoTime() - start;
+                succTimes.add(runtime);
+            }
+            // Add 'succ' runtimes to map.
+            dict.put(SUCC+i, succTimes);
+            // Run min.
+            List<Long> minTimes = new ArrayList<Long>();
             start = System.nanoTime();
-            ds.insert(k, null);
+            ds.minimum();
             runtime = System.nanoTime() - start;
-            insertTimes.add(runtime);
-        }
-        // Add 'insert' runtimes to map.
-        dict.put(INSERT, insertTimes);
-        Random rand = new Random();
-        List<Long> searchTimes = new ArrayList<Long>();
-        // For loop for 'search'.
-        for (int i = 0; i < LIMIT; i++) {
-            int randomInt = rand.nextInt(names.length);
-            KeyType k = new KeyType(names[randomInt]);
+            minTimes.add(runtime);
+            dict.put(MIN+i, minTimes);
+            // Run max.
+            List<Long> maxTimes = new ArrayList<Long>();
             start = System.nanoTime();
-            Object o = ds.search(k);
+            ds.maximum();
             runtime = System.nanoTime() - start;
-            searchTimes.add(runtime);
-            keyTypes.add(o);
+            maxTimes.add(runtime);
+            dict.put(MAX+i, maxTimes);
         }
-        // Add 'search' runtimes to map.
-        dict.put(SEARCH, searchTimes);
-        List<Long> predTimes = new ArrayList<Long>();
-        // For loop for 'pred'.
-        for (int i = 0; i < keyTypes.size(); i++) {
-            KeyType k = (KeyType)keyTypes.get(i);
-            start = System.nanoTime();
-            ds.predecessor(k);
-            runtime = System.nanoTime() - start;
-            predTimes.add(runtime);
-        }
-        // Add 'pred' runtimes to map.
-        dict.put(PRED, predTimes);
-        List<Long> succTimes = new ArrayList<Long>();
-        // For loop for 'succ'.
-        for (int i = 0; i < keyTypes.size(); i++) {
-            KeyType k = (KeyType)keyTypes.get(i);
-            start = System.nanoTime();
-            ds.successor(k);
-            runtime = System.nanoTime() - start;
-            succTimes.add(runtime);
-        }
-        // Add 'succ' runtimes to map.
-        dict.put(SUCC, succTimes);
-        // Run min.
-        List<Long> minTimes = new ArrayList<Long>();
-        start = System.nanoTime();
-        ds.minimum();
-        runtime = System.nanoTime() - start;
-        minTimes.add(runtime);
-        dict.put(MIN, minTimes);
-        // Run max.
-        List<Long> maxTimes = new ArrayList<Long>();
-        start = System.nanoTime();
-        ds.maximum();
-        runtime = System.nanoTime() - start;
-        maxTimes.add(runtime);
-        dict.put(MAX, maxTimes);
-
         printResults();
     }
 
     private static void insert(String key) {
-        log("Inserting...");
+        for (int i = 0; i < dynamicSets.length; i++) {
+            DynamicSet ds = dynamicSets[i];
+            ds.insert(new KeyType(key), null);
+        }
     }
 
     private static void search(String key) {
+        for (DynamicSet ds : dynamicSets) {
+            Object o = ds.search(new KeyType(key));
+            log("search returned: " + o);
+        }
     }
 
     private static void delete(String key) {
+        for (DynamicSet ds : dynamicSets) {
+            ds.delete(new KeyType(key));
+        }
     }
 
     private static void pred(String key) {
+        for (DynamicSet ds : dynamicSets) {
+            Object o = ds.predecessor(new KeyType(key));
+            log("pred returned: " + o);
+        }
     }
 
     private static void succ(String key) {
+        for (DynamicSet ds : dynamicSets) {
+            Object o = ds.successor(new KeyType(key));
+            log("succ returned: " + o);
+        }
     }
 
     private static void min() {
@@ -226,35 +253,36 @@ public class Driver implements Const {
     }
 
     private static void printResults() {
-        long[] insertResults = computeResults(INSERT, true);
-        long[] searchResults = computeResults(SEARCH, false);
-        long[] predResults   = computeResults(PRED, false);
-        long[] succResults   = computeResults(SUCC, false);
+        for (int i = 0; i < dynamicSets.length; i++) {
+            long[] insertResults = computeResults(INSERT+i, true);
+            long[] searchResults = computeResults(SEARCH+i, false);
+            long[] predResults   = computeResults(PRED+i, false);
+            long[] succResults   = computeResults(SUCC+i, false);
 
-        String insert = insertResults[0] + " / " + insertResults[1]  + " / " + insertResults[2];
-        String search = searchResults[0] + " / " + searchResults[1] + " / " + searchResults[2];
-        String pred   = predResults[0]   + " / " + predResults[1]    + " / " + predResults[2];
-        String succ   = succResults[0]   + " / " + succResults[1]    + " / " + succResults[2];
-        String min    = dict.get(MIN).get(0).toString();
-        String max    = dict.get(MAX).get(0).toString();
+            String insert = insertResults[0] + " / " + insertResults[1]  + " / " + insertResults[2];
+            String search = searchResults[0] + " / " + searchResults[1] + " / " + searchResults[2];
+            String pred   = predResults[0]   + " / " + predResults[1]    + " / " + predResults[2];
+            String succ   = succResults[0]   + " / " + succResults[1]    + " / " + succResults[2];
+            String min    = dict.get(MIN+i).get(0).toString();
+            String max    = dict.get(MAX+i).get(0).toString();
 
-        log("Size: " + names.length);
-        log("---------------------------------------------------------");
-        log("            | LL       |  SK      |  BST     | RBT      |");
-        log("---------------------------------------------------------");
-        log("insert      | "+insert+"  |          |          |          |");
-        log("---------------------------------------------------------");
-        log("search      | "+search+" |          |          |          |");
-        log("---------------------------------------------------------");
-        log("predecessor | "+pred+" |          |          |          |");
-        log("---------------------------------------------------------");
-        log("successor   | "+succ+" |          |          |          |");
-        log("---------------------------------------------------------");
-        log("minimum     | "+min+"  |          |          |          |");
-        log("---------------------------------------------------------");
-        log("maximum     | "+max+"  |          |          |          |");
-        log("---------------------------------------------------------");
-
+            log("Size: " + names.length);
+            log("---------------------------------------------------------");
+            log("            | LL       |  SK      |  BST     | RBT      |");
+            log("---------------------------------------------------------");
+            log("insert      | "+insert+"  |          |          |          |");
+            log("---------------------------------------------------------");
+            log("search      | "+search+" |          |          |          |");
+            log("---------------------------------------------------------");
+            log("predecessor | "+pred+" |          |          |          |");
+            log("---------------------------------------------------------");
+            log("successor   | "+succ+" |          |          |          |");
+            log("---------------------------------------------------------");
+            log("minimum     | "+min+"  |          |          |          |");
+            log("---------------------------------------------------------");
+            log("maximum     | "+max+"  |          |          |          |");
+            log("---------------------------------------------------------");
+        }
         dict.clear();
     }
 

@@ -17,7 +17,7 @@ public class DLLDynamicSet implements DynamicSet {
 
     // Inserts element e in the set under key k.
     public void insert(KeyType k, Object o) {
-        for (int i = 0; i < this.nodes.size(); i++) {
+        for (int i = 0; i < this.size(); i++) {
             KeyType key = this.nodes.get(i);
             if (key.compareTo(k) > 0) {
                 this.nodes.add(i, k);
@@ -30,16 +30,18 @@ public class DLLDynamicSet implements DynamicSet {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
-        this.nodes.remove(k);
+        for (KeyType key : this.nodes) 
+            if (k.getValue().equals(key.getValue()))
+                this.nodes.remove(key);
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
-        if (this.nodes.contains(k))
-            return k;
-        else
-            return null;
+        for (KeyType key : this.nodes)
+            if (k.getValue().equals(key.getValue()))
+                return key.getValue();
+        return null;
     }
                                                                    
     // The following operations apply when there is a total ordering on KeyType   
@@ -59,28 +61,58 @@ public class DLLDynamicSet implements DynamicSet {
     // Finds an Object that has the next larger key in the set above k, 
     // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
-        int i = this.nodes.indexOf(k);
-        if (i < this.nodes.size() - 1)
-            return this.nodes.get(i+1);
-        else
-            return null;
+        for (KeyType key : this.nodes) {
+            if (k.getValue().equals(key.getValue())) {
+                int index = this.nodes.indexOf(key);
+                if (index < this.size()-1)
+                    return this.nodes.get(index+1).getValue();
+                else 
+                    return null;
+            }
+        }
+        return null;
     }
 
     // Finds an Object that has the next smaller key in the set below k,
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
-        int i = this.nodes.indexOf(k);
-        if (i > 0)
-            return this.nodes.get(i-1);
-        else
-            return null;
+        for (KeyType key : this.nodes) {
+            if (k.getValue().equals(key.getValue())) {
+                int index = this.nodes.indexOf(key);
+                if (index > 0)
+                    return this.nodes.get(index-1).getValue();
+                else 
+                    return null;
+            }
+        }
+        return null;
     }
 
     public String toString() {
         String s = "";
-        for (int i = 0; i < this.nodes.size(); i++)
+        for (int i = 0; i < this.size(); i++)
             s += this.nodes.get(i).getValue() + " ";
         return s;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
