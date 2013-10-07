@@ -1,30 +1,97 @@
 import java.util.List;
-import java.util.LinkedList;
 import java.util.ArrayList;
 
 public class SkipListDynamicSet implements DynamicSet {
 
-    private List<LinkedList<KeyType>> rows;
+    private Node head;
+    private int size;
+    private int numLevels;
+    // Sentinel values.
     private final String MIN_VALUE = "Negative Infinity";
     private final String MAX_VALUE = "Positive Infinity";
     
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public SkipListDynamicSet() {
-        this.rows = new ArrayList<LinkedList<KeyType>>();
-        this.rows.add(new LinkedList<KeyType>());
-        this.rows.get(0).add(new KeyType(MIN_VALUE));
-        this.rows.get(0).add(new KeyType(MAX_VALUE));
+        this.head = new Node(MIN_VALUE);
+        this.head.setRight(new Node(MAX_VALUE));
+        this.size = 0;
+        this.numLevels = 1;
     }
 
     // Returns the number of elements currently in the set.
     public int size() {
-        return this.rows.get(0).size() - 2;
+        return this.size;
     }
 
     // Inserts element e in the set under key k.
     public void insert(KeyType k, Object e) {
-        for (LinkedList<KeyType> row : rows) {
-
+        // Start at top left, work our way right and down.
+        Node currentNode = head;
+        int currentLevel = this.numLevels;
+        // If we insert a tower of nodes, we need to keep track of who the left 
+        // and right will be of each node in the tower.
+        List<List<Node>> tempRows = new ArrayList<List<Node>>(this.numLevels);
+        while (true) {
+            // If the next node is greater than the key, move down.
+            System.out.println(currentNode.getKey().getValue());
+            if (currentNode.getRight().getKey().getValue().equals(MAX_VALUE) || (currentNode.getRight().getKey().compareTo(k) >= 0)) {
+                // If we can't move down any farther, we found our insert point.
+                if (currentLevel == 1) {
+                    // Create new node, assign/rearrange pointers.
+                    Node n = new Node(k);
+                    n.setLeft(currentNode);
+                    n.setRight(currentNode.getRight());
+                    currentNode.setRight(n);
+                    currentNode = n;
+                    // Keep track of where we are in the tempRows list.
+                    int i = 0;
+                    // Flip coin to see if we're creating a tower.
+                    while (Math.random() <= 0.5) {
+                        Node aboveNode = new Node(k);
+                        currentNode.setAbove(aboveNode);
+                        aboveNode.setBelow(currentNode);
+                        if (tempRows.isEmpty()) {
+                            aboveNode.setLeft(head);
+                            aboveNode.setRight(head.getRight());
+                            head.setRight(aboveNode);
+                            head.getRight().setLeft(aboveNode);
+                        }
+                        else {
+                            aboveNode.setLeft(tempRows.get(i).get(0));
+                            aboveNode.setRight(tempRows.get(i).get(1));
+                            tempRows.get(i).get(0).setRight(aboveNode);
+                            tempRows.get(i).get(1).setLeft(aboveNode);
+                        }
+                        currentNode = aboveNode;
+                        currentLevel++;
+                        i++;
+                        // If we're at the top level, add a new level, set pointers and new head.
+                        if (currentLevel == this.numLevels) {
+                            Node newHead = new Node(MIN_VALUE);
+                            Node newHeadRight = new Node(MAX_VALUE);
+                            newHead.setBelow(head);
+                            newHead.setRight(newHeadRight);
+                            this.head.setAbove(newHead);
+                            this.head = newHead;
+                            this.numLevels++;
+                        }
+                    }
+                    return;
+                }
+                else {
+                    // Store the potential left and right nodes of our node of interest.
+                    List<Node> tempNodes = new ArrayList<Node>(2);
+                    tempNodes.add(0, currentNode);
+                    tempNodes.add(1, currentNode.getRight());
+                    tempRows.add(tempNodes);
+                    currentNode = currentNode.getBelow();
+                    currentLevel--;
+                }
+            }
+            // Otherwise, move right.
+            else {
+                currentNode = currentNode.getRight();
+            }
         }
     }
                                         
