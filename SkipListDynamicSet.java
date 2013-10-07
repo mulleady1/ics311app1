@@ -4,20 +4,28 @@ import java.util.ArrayList;
 
 public class SkipListDynamicSet implements DynamicSet {
 
-    private List<LinkedList> rows;
+    private List<LinkedList<KeyType>> rows;
+    private final String MIN_VALUE = "Negative Infinity";
+    private final String MAX_VALUE = "Positive Infinity";
     
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public SkipListDynamicSet() {
-        this.rows = new ArrayList<LinkedList>();
+        this.rows = new ArrayList<LinkedList<KeyType>>();
+        this.rows.add(new LinkedList<KeyType>());
+        this.rows.get(0).add(new KeyType(MIN_VALUE));
+        this.rows.get(0).add(new KeyType(MAX_VALUE));
     }
 
     // Returns the number of elements currently in the set.
     public int size() {
-        return this.rows.get(0).size();
+        return this.rows.get(0).size() - 2;
     }
 
     // Inserts element e in the set under key k.
     public void insert(KeyType k, Object e) {
+        for (LinkedList<KeyType> row : rows) {
+
+        }
     }
                                         
     // Given a key k, removes elements indexed by k from the set.
