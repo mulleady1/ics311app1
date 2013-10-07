@@ -30,9 +30,12 @@ public class DLLDynamicSet implements DynamicSet {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
-        for (KeyType key : this.nodes) 
-            if (k.getValue().equals(key.getValue()))
+        for (KeyType key : this.nodes) {
+            if (k.getValue().equals(key.getValue())) {
                 this.nodes.remove(key);
+                return;
+            }
+        }
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,

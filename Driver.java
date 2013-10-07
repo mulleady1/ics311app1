@@ -172,7 +172,7 @@ public class Driver implements Const {
         for (DynamicSet ds : dynamicSets) {
             KeyType k = (KeyType)ds.search(new KeyType(key));
             String val = k != null ? k.getValue() : "null";
-            log("search returned: " + val);
+            log("search for " + ds.getClass() + " returned: " + val);
         }
     }
 
@@ -186,7 +186,7 @@ public class Driver implements Const {
         for (DynamicSet ds : dynamicSets) {
             KeyType k = (KeyType)ds.predecessor(new KeyType(key));
             String val = k != null ? k.getValue() : "null";
-            log("pred returned: " + val);
+            log("pred for " + ds.getClass() + " returned: " + val);
         }
     }
 
@@ -194,14 +194,24 @@ public class Driver implements Const {
         for (DynamicSet ds : dynamicSets) {
             KeyType k = (KeyType)ds.successor(new KeyType(key));
             String val = k != null ? k.getValue() : "null";
-            log("succ returned: " + val);
+            log("succ for " + ds.getClass() + " returned: " + val);
         }
     }
 
     private static void min() {
+        for (DynamicSet ds : dynamicSets) {
+            KeyType k = (KeyType)ds.minimum();
+            String val = k != null ? k.getValue() : "null";
+            log("min for " + ds.getClass() + " returned: " + val);
+        }
     }
 
     private static void max() {
+        for (DynamicSet ds : dynamicSets) {
+            KeyType k = (KeyType)ds.maximum();
+            String val = k != null ? k.getValue() : "null";
+            log("max for " + ds.getClass() + " returned: " + val);
+        }
     }
 
     private static void quit() {
