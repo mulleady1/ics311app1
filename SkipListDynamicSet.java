@@ -11,6 +11,7 @@ public class SkipListDynamicSet implements DynamicSet {
     // Sentinel values.
     private final String MIN_VALUE = "Negative Infinity";
     private final String MAX_VALUE = "Positive Infinity";
+    // Constants used when prepping a tower of nodes in the skip list.
     private final int LEFT = 0;
     private final int RIGHT = 1;
     
@@ -95,6 +96,7 @@ public class SkipListDynamicSet implements DynamicSet {
                             rows.put(currentLevel+1, getTopNodes());
                         }
                     }
+                    this.size++;
                     return;
                 }
             }
