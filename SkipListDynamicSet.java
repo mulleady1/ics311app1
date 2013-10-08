@@ -36,11 +36,26 @@ public class SkipListDynamicSet implements DynamicSet {
         // If we insert a tower of nodes, we need to keep track of who the left and right will be of each node in the tower.
         Map<Integer, List<Node>> rows = new HashMap<Integer, List<Node>>();
         while (true) {
-            // If the currentNode's right node is greater than k, move down.
-            if (currentNode.getRight().getKey().getValue().equals(MAX_VALUE) || (currentNode.getRight().getKey().compareTo(k) >= 0)) {
-                //log("currentNode's right node is greater than k.");
-                // If we can't move down any farther, we found our insert point.
-                if (currentLevel == 1) {
+            // If the currentNode's right node is less than k, move right.
+            if (currentNode.getRight().getKey().compareTo(k) < 0 && !currentNode.getRight().getKey().getValue().equals(MAX_VALUE)) {
+                //log("Moving right.");
+                currentNode = currentNode.getRight();
+            }
+            // If the currentNode's right node is >= k, move down.
+            else {
+                // If we're not at the bottom level, move down.
+                if (currentLevel > 1) {
+                    //log("Moving down.");
+                    // Store the left and right nodes of the current level in case we make a tower.
+                    List<Node> nodes = new ArrayList<Node>(2);
+                    nodes.add(LEFT, currentNode);
+                    nodes.add(RIGHT, currentNode.getRight());
+                    rows.put(currentLevel, nodes);
+                    currentNode = currentNode.getBelow();
+                    currentLevel--;
+                }
+                // If we can't move down any further, we've found our insert point.
+                else {
                     //log("At bottom level.");
                     // Create new node and set appropriate left and right pointers.
                     Node n = new Node(k);
@@ -50,11 +65,10 @@ public class SkipListDynamicSet implements DynamicSet {
                     currentNode.setRight(n);
                     currentNode = n;
                     //log("Added new node and set pointers.");
-                    // When the first element is added, we need to add a new level.
+                    // When the first element is inserted, we need to add a new level.
                     if (this.numLevels == 1) {
                         //log("Adding a level.");
                         addLevel();
-                        //log("Added a level.");
                         // Store the nodes of the new level in case we make a tower.
                         rows.put(currentLevel+1, getTopNodes());
                     }
@@ -74,7 +88,7 @@ public class SkipListDynamicSet implements DynamicSet {
                         // Move up one level.
                         currentNode = aboveNode;
                         currentLevel++;
-                        // If we're at the top level, add a new level, set pointers and new head.
+                        // If we're at the top level, add a new one.
                         if (currentLevel == this.numLevels) {
                             addLevel();
                             // Store the nodes of the new level in case we continue the tower.
@@ -83,21 +97,6 @@ public class SkipListDynamicSet implements DynamicSet {
                     }
                     return;
                 }
-                // If we're not already at the bottom level, move down.
-                else {
-                    //log("Moving down a level.");
-                    // Store the left and right nodes of the current level in case we make a tower.
-                    List<Node> nodes = new ArrayList<Node>(2);
-                    nodes.add(LEFT, currentNode);
-                    nodes.add(RIGHT, currentNode.getRight());
-                    rows.put(currentLevel, nodes);
-                    currentNode = currentNode.getBelow();
-                    currentLevel--;
-                }
-            }
-            // If the currentNode's right node is less than k, move right.
-            else {
-                currentNode = currentNode.getRight();
             }
         }
     }
