@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SkipListDynamicSet implements DynamicSet {
 
@@ -9,6 +11,8 @@ public class SkipListDynamicSet implements DynamicSet {
     // Sentinel values.
     private final String MIN_VALUE = "Negative Infinity";
     private final String MAX_VALUE = "Positive Infinity";
+    private final int LEFT = 0;
+    private final int RIGHT = 1;
     
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public SkipListDynamicSet() {
@@ -25,70 +29,73 @@ public class SkipListDynamicSet implements DynamicSet {
 
     // Inserts element e in the set under key k.
     public void insert(KeyType k, Object e) {
+        //log("Inserting into skip list.");
         // Start at top left, work our way right and down.
         Node currentNode = head;
         int currentLevel = this.numLevels;
-        // If we insert a tower of nodes, we need to keep track of who the left 
-        // and right will be of each node in the tower.
-        List<List<Node>> tempRows = new ArrayList<List<Node>>(this.numLevels);
+        // If we insert a tower of nodes, we need to keep track of who the left and right will be of each node in the tower.
+        Map<Integer, List<Node>> rows = new HashMap<Integer, List<Node>>();
         while (true) {
-            // If the next node is greater than the key, move down.
-            System.out.println(currentNode.getKey().getValue());
+            // If the currentNode's right node is greater than k, move down.
             if (currentNode.getRight().getKey().getValue().equals(MAX_VALUE) || (currentNode.getRight().getKey().compareTo(k) >= 0)) {
+                //log("currentNode's right node is greater than k.");
                 // If we can't move down any farther, we found our insert point.
                 if (currentLevel == 1) {
-                    // Create new node, assign/rearrange pointers.
+                    //log("At bottom level.");
+                    // Create new node and set appropriate left and right pointers.
                     Node n = new Node(k);
                     n.setLeft(currentNode);
                     n.setRight(currentNode.getRight());
+                    currentNode.getRight().setLeft(n);
                     currentNode.setRight(n);
                     currentNode = n;
-                    // Keep track of where we are in the tempRows list.
-                    int i = 0;
+                    //log("Added new node and set pointers.");
+                    // When the first element is added, we need to add a new level.
+                    if (this.numLevels == 1) {
+                        //log("Adding a level.");
+                        addLevel();
+                        //log("Added a level.");
+                        // Store the nodes of the new level in case we make a tower.
+                        rows.put(currentLevel+1, getTopNodes());
+                    }
+                    int i = 1;
                     // Flip coin to see if we're creating a tower.
                     while (Math.random() <= 0.5) {
+                        //log("Adding node number " + ++i + ".");
+                        // Create a tower by setting appropriate above and below pointers.
                         Node aboveNode = new Node(k);
                         currentNode.setAbove(aboveNode);
                         aboveNode.setBelow(currentNode);
-                        if (tempRows.isEmpty()) {
-                            aboveNode.setLeft(head);
-                            aboveNode.setRight(head.getRight());
-                            head.setRight(aboveNode);
-                            head.getRight().setLeft(aboveNode);
-                        }
-                        else {
-                            aboveNode.setLeft(tempRows.get(i).get(0));
-                            aboveNode.setRight(tempRows.get(i).get(1));
-                            tempRows.get(i).get(0).setRight(aboveNode);
-                            tempRows.get(i).get(1).setLeft(aboveNode);
-                        }
+                        // Also set appropriate left and right pointers.
+                        aboveNode.setLeft(rows.get(currentLevel+1).get(LEFT));
+                        aboveNode.setRight(rows.get(currentLevel+1).get(RIGHT));
+                        rows.get(currentLevel+1).get(LEFT).setRight(aboveNode);
+                        rows.get(currentLevel+1).get(RIGHT).setLeft(aboveNode);
+                        // Move up one level.
                         currentNode = aboveNode;
                         currentLevel++;
-                        i++;
                         // If we're at the top level, add a new level, set pointers and new head.
                         if (currentLevel == this.numLevels) {
-                            Node newHead = new Node(MIN_VALUE);
-                            Node newHeadRight = new Node(MAX_VALUE);
-                            newHead.setBelow(head);
-                            newHead.setRight(newHeadRight);
-                            this.head.setAbove(newHead);
-                            this.head = newHead;
-                            this.numLevels++;
+                            addLevel();
+                            // Store the nodes of the new level in case we continue the tower.
+                            rows.put(currentLevel+1, getTopNodes());
                         }
                     }
                     return;
                 }
+                // If we're not already at the bottom level, move down.
                 else {
-                    // Store the potential left and right nodes of our node of interest.
-                    List<Node> tempNodes = new ArrayList<Node>(2);
-                    tempNodes.add(0, currentNode);
-                    tempNodes.add(1, currentNode.getRight());
-                    tempRows.add(tempNodes);
+                    //log("Moving down a level.");
+                    // Store the left and right nodes of the current level in case we make a tower.
+                    List<Node> nodes = new ArrayList<Node>(2);
+                    nodes.add(LEFT, currentNode);
+                    nodes.add(RIGHT, currentNode.getRight());
+                    rows.put(currentLevel, nodes);
                     currentNode = currentNode.getBelow();
                     currentLevel--;
                 }
             }
-            // Otherwise, move right.
+            // If the currentNode's right node is less than k, move right.
             else {
                 currentNode = currentNode.getRight();
             }
@@ -102,7 +109,30 @@ public class SkipListDynamicSet implements DynamicSet {
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
-        return null;
+        Node currentNode = this.head;
+        int currentLevel = this.numLevels;
+        // Loop until we find the node we're looking for or until we reach the bottom.
+        while (true) {
+            if (currentNode.getKey().compareTo(k) == 0) {
+                return currentNode.getKey();
+            }
+            // If the currentNode's right node is greater than k, try and move down one level.
+            else if (currentNode.getRight().getKey().getValue().equals(MAX_VALUE) || (currentNode.getRight().getKey().compareTo(k) > 0)) {
+                // If we make it here and we're at the bottom level, return null.
+                if (currentLevel == 1) {
+                    return null;
+                }
+                // If we're not at the bottom level, move down and keep searching.
+                else {
+                    currentNode = currentNode.getBelow();
+                    currentLevel--;
+                }
+            }
+            // If the currentNode's right node is less than k, move right.
+            else {
+                currentNode = currentNode.getRight();
+            }
+        }
     }
                                                                    
     // The following operations apply when there is a total ordering on KeyType   
@@ -129,5 +159,40 @@ public class SkipListDynamicSet implements DynamicSet {
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
         return null;
+    }
+
+    private void addLevel() {
+        Node newHead = new Node(MIN_VALUE);
+        Node newHeadRight = new Node(MAX_VALUE);
+        newHead.setBelow(this.head);
+        newHead.setRight(newHeadRight);
+        this.head.setAbove(newHead);
+        this.head = newHead;
+        this.numLevels++;
+    }
+
+    private List<Node> getTopNodes() {
+        List<Node> nodes = new ArrayList<Node>(2);
+        nodes.add(LEFT, this.head);
+        nodes.add(RIGHT, this.head.getRight());
+        return nodes;
+    }
+
+    // Print space-separated values of the keys of the bottom row only.
+    public String toString() {
+        String s = "";
+        Node currentNode = this.head;
+        while (currentNode.getBelow() != null) {
+            currentNode = currentNode.getBelow();
+        }
+        while (currentNode != null) {
+            s += currentNode.getKey().getValue() + " ";
+            currentNode = currentNode.getRight();
+        }
+        return s;
+    }
+
+    private void log(Object o) {
+        System.out.println(String.valueOf(o));
     }
 }

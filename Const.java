@@ -8,5 +8,5 @@ public interface Const {
     static final String MAX     = "max";
     static final String MIN     = "min";
     static final int LIMIT = 10;
-    static final int NUM_DATA_STRUCTURES = 1;
+    static final int NUM_DATA_STRUCTURES = 2;
 }

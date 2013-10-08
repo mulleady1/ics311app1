@@ -27,6 +27,7 @@ public class Driver implements Const {
         Scanner scan = new Scanner(System.in);
         dynamicSets = new DynamicSet[NUM_DATA_STRUCTURES];
         dynamicSets[0] = new DLLDynamicSet();
+        dynamicSets[1] = new SkipListDynamicSet();
         try {
             // App interface.
             while (true) {
