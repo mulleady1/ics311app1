@@ -9,4 +9,10 @@ public interface Const {
     static final String MIN     = "min";
     static final int LIMIT = 10;
     static final int NUM_DATA_STRUCTURES = 2;
+    // Sentinel values.
+    final String MIN_VALUE = "NEGATIVE_INFINITY";
+    final String MAX_VALUE = "POSITIVE_INFINITY";
+    // Constants used when prepping a tower of nodes in the skip list.
+    final int LEFT = 0;
+    final int RIGHT = 1;
 }

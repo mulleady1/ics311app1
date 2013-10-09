@@ -3,22 +3,16 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-public class SkipListDynamicSet implements DynamicSet {
+public class SkipListDynamicSet implements DynamicSet, Const {
 
     private Node head;
     private int size;
     private int numLevels;
-    // Sentinel values.
-    private final String MIN_VALUE = "Negative Infinity";
-    private final String MAX_VALUE = "Positive Infinity";
-    // Constants used when prepping a tower of nodes in the skip list.
-    private final int LEFT = 0;
-    private final int RIGHT = 1;
     
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public SkipListDynamicSet() {
-        this.head = new Node(MIN_VALUE);
-        this.head.setRight(new Node(MAX_VALUE));
+        this.head = new QuadNode(MIN_VALUE);
+        this.head.setRight(new QuadNode(MAX_VALUE));
         this.size = 0;
         this.numLevels = 1;
     }
@@ -59,7 +53,7 @@ public class SkipListDynamicSet implements DynamicSet {
                 else {
                     //log("At bottom level.");
                     // Create new node and set appropriate left and right pointers.
-                    Node n = new Node(k);
+                    Node n = new QuadNode(k);
                     n.setLeft(currentNode);
                     n.setRight(currentNode.getRight());
                     currentNode.getRight().setLeft(n);
@@ -78,7 +72,7 @@ public class SkipListDynamicSet implements DynamicSet {
                     while (Math.random() <= 0.5) {
                         //log("Adding node number " + ++i + ".");
                         // Create a tower by setting appropriate above and below pointers.
-                        Node aboveNode = new Node(k);
+                        Node aboveNode = new QuadNode(k);
                         currentNode.setAbove(aboveNode);
                         aboveNode.setBelow(currentNode);
                         // Also set appropriate left and right pointers.
@@ -163,8 +157,8 @@ public class SkipListDynamicSet implements DynamicSet {
     }
 
     private void addLevel() {
-        Node newHead = new Node(MIN_VALUE);
-        Node newHeadRight = new Node(MAX_VALUE);
+        Node newHead = new QuadNode(MIN_VALUE);
+        Node newHeadRight = new QuadNode(MAX_VALUE);
         newHead.setBelow(this.head);
         newHead.setRight(newHeadRight);
         this.head.setAbove(newHead);
