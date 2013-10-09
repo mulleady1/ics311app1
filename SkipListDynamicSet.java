@@ -92,6 +92,7 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                         currentNode = n;
                     }
                     this.size++;
+                    /*
                     // Begin debug printing.
                     Node node = this.head;
                     Node left = this.head;
@@ -110,6 +111,7 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                     s += "--------\n";
                     log(s);
                     // End debug printing.
+                    */
                     return;
                 }
             }
@@ -151,10 +153,9 @@ public class SkipListDynamicSet implements DynamicSet, Const {
     // or null if not found. 
     public Object search(KeyType k) {
         Node n = nodeSearch(k);
-        if (n.getKey().compareTo(k) == 0)
-            return n.getKey();
-        else
+        if (n.getKey().compareTo(k) != 0)
             return null;
+        return n.getKey();
     }
 
     // Returns either the node with k or the max node less than k.
@@ -197,9 +198,9 @@ public class SkipListDynamicSet implements DynamicSet, Const {
     // or null if the set is empty. 
     public Object minimum() {
         Node n = nodeMinimum();
-        if (n != null)
-            return n.getKey();
-        return null;
+        if (n == null)
+            return null;
+        return n.getKey();
     }
 
     // Returns the min node or null if empty set.
@@ -218,9 +219,9 @@ public class SkipListDynamicSet implements DynamicSet, Const {
     // or null if the set is empty.
     public Object maximum() {
         Node n = nodeMaximum();
-        if (n != null)
-            return n.getKey();
-        return null;
+        if (n == null)
+            return null;
+        return n.getKey();
     }
 
     // Returns the max node or null if empty set.
