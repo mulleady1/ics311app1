@@ -53,6 +53,13 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                 // If we can't move down any further, we've found our insert point.
                 else {
                     //log("At bottom level.");
+                    // When the first element is inserted, we need to add a new level.
+                    if (this.numLevels == 1) {
+                        //log("Adding a level.");
+                        addLevel();
+                        // Store the nodes of the new level in case we make a tower.
+                        rows.put(currentLevel+1, getTopNodes());
+                    }
                     // Create new node and set appropriate left and right pointers.
                     Node n = new QuadNode(k);
                     n.setLeft(currentNode);
@@ -61,28 +68,11 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                     currentNode.setRight(n);
                     currentNode = n;
                     //log("Added new node and set pointers.");
-                    // When the first element is inserted, we need to add a new level.
-                    if (this.numLevels == 1) {
-                        //log("Adding a level.");
-                        addLevel();
-                        // Store the nodes of the new level in case we make a tower.
-                        rows.put(currentLevel+1, getTopNodes());
-                    }
                     int i = 1;
                     // Flip coin to see if we're creating a tower.
                     while (Math.random() <= 0.5) {
                         //log("Adding node number " + ++i + ".");
-                        // Create a tower by setting appropriate above and below pointers.
-                        Node aboveNode = new QuadNode(k);
-                        currentNode.setAbove(aboveNode);
-                        aboveNode.setBelow(currentNode);
-                        // Also set appropriate left and right pointers.
-                        aboveNode.setLeft(rows.get(currentLevel+1).get(LEFT));
-                        aboveNode.setRight(rows.get(currentLevel+1).get(RIGHT));
-                        rows.get(currentLevel+1).get(LEFT).setRight(aboveNode);
-                        rows.get(currentLevel+1).get(RIGHT).setLeft(aboveNode);
                         // Move up one level.
-                        currentNode = aboveNode;
                         currentLevel++;
                         // If we're at the top level, add a new one.
                         if (currentLevel == this.numLevels) {
@@ -90,6 +80,16 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                             // Store the nodes of the new level in case we continue the tower.
                             rows.put(currentLevel+1, getTopNodes());
                         }
+                        // Create a tower by setting appropriate above and below pointers.
+                        n = new QuadNode(k);
+                        currentNode.setAbove(n);
+                        n.setBelow(currentNode);
+                        // Also set appropriate left and right pointers.
+                        n.setLeft(rows.get(currentLevel).get(LEFT));
+                        n.setRight(rows.get(currentLevel).get(RIGHT));
+                        rows.get(currentLevel).get(LEFT).setRight(n);
+                        rows.get(currentLevel).get(RIGHT).setLeft(n);
+                        currentNode = n;
                     }
                     this.size++;
                     // Begin debug printing.
@@ -132,6 +132,17 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                 n.setLeft(null);
                 n.setRight(null);
                 n = n.getBelow();
+                // Remove a level if necessary.
+                if (this.head.getBelow().getRight().getKey().getValue().equals(MAX_VALUE)) {
+                    this.head.getRight().setBelow(null);
+                    this.head.getRight().setLeft(null);
+                    this.head.setRight(null);
+                    this.head = this.head.getBelow();
+                    this.head.getAbove().setBelow(null);
+                    this.head.setAbove(null);
+                    this.head.getRight().setAbove(null);
+                    this.numLevels--;
+                }
             }
         }
     }
@@ -218,10 +229,8 @@ public class SkipListDynamicSet implements DynamicSet, Const {
             return null;
         // Start at the max sentinel and move down.
         Node currentNode = this.head.getRight();
-        log("nodeMaximum: this.head.getRight(): " + currentNode.getKey().getValue());
         while (currentNode.getBelow() != null) {
             currentNode = currentNode.getBelow();
-            log("nodeMaximum: currentNode.getKey(): " + currentNode.getKey().getValue());
         }
         // Return the sentinel's left node's key.
         return currentNode.getLeft();
@@ -289,7 +298,8 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         while (currentNode.getBelow() != null) {
             currentNode = currentNode.getBelow();
         }
-        while (currentNode != null) {
+        currentNode = currentNode.getRight();
+        while (currentNode.getKey().getValue().compareTo(MAX_VALUE) != 0) {
             s += currentNode.getKey().getValue() + " ";
             currentNode = currentNode.getRight();
         }
