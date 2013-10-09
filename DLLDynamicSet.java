@@ -1,50 +1,79 @@
-import java.util.List;
-import java.util.LinkedList;
+public class DLLDynamicSet implements DynamicSet, Const {
 
-public class DLLDynamicSet implements DynamicSet {
-
-    private LinkedList<KeyType> nodes;
+    private Node head;
+    private int size;
 
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public DLLDynamicSet() {
-        this.nodes = new LinkedList<KeyType>();
+        this.head = new DLLNode(MIN_VALUE);
+        this.size = 0;
     }
 
     // Returns the number of elements currently in the set.
     public int size() {
-        return this.nodes.size();
+        return this.size;
     }
 
     // Inserts element e in the set under key k.
     public void insert(KeyType k, Object o) {
-        for (int i = 0; i < this.size(); i++) {
-            KeyType key = this.nodes.get(i);
-            if (key.compareTo(k) > 0) {
-                this.nodes.add(i, k);
-                break;
-            }
+        // Start at the head, moving right until we find our insert point.
+        Node currentNode = this.head;
+        // Run this block if the list is empty.
+        if (currentNode.getRight() == null) {
+            // Create a new node and set pointers.
+            Node n = new DLLNode(k);
+            n.setLeft(currentNode);
+            n.setRight(this.head);
+            currentNode.setRight(n);
+            this.head.setLeft(n);
+            this.size++;
+            return;
         }
-        if (!this.nodes.contains(k))
-            this.nodes.add(k);
+        // While the next node's key is less than k, move right.
+        while (!currentNode.getRight().getKey().getValue().equals(MIN_VALUE) 
+            && currentNode.getRight().getKey().compareTo(k) < 0) {
+            currentNode = currentNode.getRight();
+        }
+        // Create a new node and set pointers.
+        Node newNode = new DLLNode(k);
+        currentNode.getRight().setLeft(newNode);
+        currentNode.setRight(newNode);
+        this.size++;
     }
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
-        for (KeyType key : this.nodes) {
-            if (k.getValue().equals(key.getValue())) {
-                this.nodes.remove(key);
+        // Start at the head, moving right until we find k.
+        Node currentNode = this.head;
+        // While the next node's key is not k, move right.
+        while (currentNode.getRight().getKey().compareTo(k) != 0) {
+            // If we make it back to the head, return.
+            if (currentNode.getRight().getKey().getValue().equals(MIN_VALUE)) {
                 return;
             }
+            currentNode = currentNode.getRight();
         }
+        currentNode.getRight().setLeft(currentNode.getLeft());
+        currentNode.getLeft().setRight(currentNode.getRight());
+        currentNode.setLeft(null);
+        currentNode.setRight(null);
+        currentNode = null;
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
-        for (KeyType key : this.nodes)
-            if (k.getValue().equals(key.getValue()))
-                return key;
-        return null;
+        // Start at the head, moving right until we find k.
+        Node currentNode = this.head;
+        // While the next node's key is not k, move right.
+        while (currentNode.getRight().getKey().compareTo(k) != 0) {
+            // If we make it back to the head, return.
+            if (currentNode.getRight().getKey().getValue().equals(MIN_VALUE)) {
+                return null;
+            }
+            currentNode = currentNode.getRight();
+        }
+        return currentNode.getKey();
     }
                                                                    
     // The following operations apply when there is a total ordering on KeyType   
@@ -52,70 +81,34 @@ public class DLLDynamicSet implements DynamicSet {
     // Finds an Object that has the smallest key, and returns a pointer to it,
     // or null if the set is empty. 
     public Object minimum() {
-        return this.nodes.getFirst();
+        return null;
     }
                                                                                          
     // Finds an Object that has the largest key, and returns a pointer to it,
     // or null if the set is empty.
     public Object maximum() {
-        return this.nodes.getLast();
+        return null;
     }
                                                                                                          
     // Finds an Object that has the next larger key in the set above k, 
     // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
-        for (KeyType key : this.nodes) {
-            if (k.getValue().equals(key.getValue())) {
-                int index = this.nodes.indexOf(key);
-                if (index < this.size()-1)
-                    return this.nodes.get(index+1);
-                else 
-                    return null;
-            }
-        }
         return null;
     }
 
     // Finds an Object that has the next smaller key in the set below k,
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
-        for (KeyType key : this.nodes) {
-            if (k.getValue().equals(key.getValue())) {
-                int index = this.nodes.indexOf(key);
-                if (index > 0)
-                    return this.nodes.get(index-1);
-                else 
-                    return null;
-            }
-        }
         return null;
     }
 
     public String toString() {
         String s = "";
-        for (int i = 0; i < this.size(); i++)
-            s += this.nodes.get(i).getValue() + " ";
+        Node currentNode = this.head;
+        while (currentNode.getRight() != null && !currentNode.getRight().getKey().getValue().equals(MIN_VALUE)) {
+            s += currentNode.getKey().getValue() + " ";
+            currentNode = currentNode.getRight();
+        }
         return s;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
