@@ -6,6 +6,8 @@ public class DLLDynamicSet implements DynamicSet, Const {
     // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public DLLDynamicSet() {
         this.head = new DLLNode(MIN_VALUE);
+        this.head.setRight(this.head);
+        this.head.setLeft(this.head);
         this.size = 0;
     }
 
@@ -18,26 +20,17 @@ public class DLLDynamicSet implements DynamicSet, Const {
     public void insert(KeyType k, Object o) {
         // Start at the head, moving right until we find our insert point.
         Node currentNode = this.head;
-        // Run this block if the list is empty.
-        if (currentNode.getRight() == null) {
-            // Create a new node and set pointers.
-            Node n = new DLLNode(k);
-            n.setLeft(currentNode);
-            n.setRight(this.head);
-            currentNode.setRight(n);
-            this.head.setLeft(n);
-            this.size++;
-            return;
-        }
         // While the next node's key is less than k, move right.
         while (!currentNode.getRight().getKey().getValue().equals(MIN_VALUE) 
             && currentNode.getRight().getKey().compareTo(k) < 0) {
             currentNode = currentNode.getRight();
         }
         // Create a new node and set pointers.
-        Node newNode = new DLLNode(k);
-        currentNode.getRight().setLeft(newNode);
-        currentNode.setRight(newNode);
+        Node n = new DLLNode(k);
+        n.setLeft(currentNode);
+        n.setRight(currentNode.getRight());
+        currentNode.getRight().setLeft(n);
+        currentNode.setRight(n);
         this.size++;
     }
                                         
