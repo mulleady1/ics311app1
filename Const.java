@@ -1,3 +1,4 @@
+// Convenient place to store constants.
 public interface Const {
     final String RUNTEST = "runtest";
     final String INSERT  = "insert";
@@ -7,6 +8,7 @@ public interface Const {
     final String SUCC    = "succ";
     final String MAX     = "max";
     final String MIN     = "min";
+    // Constants used in Driver.java.
     final int LIMIT = 10;
     final int NUM_DATA_STRUCTURES = 2;
     // Sentinel values.

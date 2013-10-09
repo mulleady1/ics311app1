@@ -26,9 +26,9 @@ public class SkipListDynamicSet implements DynamicSet, Const {
     public void insert(KeyType k, Object e) {
         //log("Inserting into skip list.");
         // Start at top left, work our way right and down.
-        Node currentNode = head;
+        Node currentNode = this.head;
         int currentLevel = this.numLevels;
-        // If we insert a tower of nodes, we need to keep track of who the left and right will be of each node in the tower.
+        // If we insert a tower of nodes, we need to keep track of who the left and right at each level will be.
         Map<Integer, List<Node>> rows = new HashMap<Integer, List<Node>>();
         while (true) {
             // If the currentNode's right node is less than k, move right.
@@ -99,33 +99,52 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
+        // Start at the head, move right and down until we find k.
+        Node currentNode = this.head;
+
+
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
+        Node n = nodeSearch(k);
+        if (n.getKey().compareTo(k) == 0)
+            return n.getKey();
+        else
+            return null;
+    }
+
+    // Returns either the node with k or the max node less than k.
+    private Node nodeSearch(KeyType k) {
         Node currentNode = this.head;
         int currentLevel = this.numLevels;
-        // Loop until we find the node we're looking for or until we reach the bottom.
+        // Loop until we find the node we're looking for or the max node less than k.
         while (true) {
             if (currentNode.getKey().compareTo(k) == 0) {
-                return currentNode.getKey();
+                return currentNode;
             }
-            // If the currentNode's right node is greater than k, try and move down one level.
-            else if (currentNode.getRight().getKey().getValue().equals(MAX_VALUE) || (currentNode.getRight().getKey().compareTo(k) > 0)) {
-                // If we make it here and we're at the bottom level, return null.
+            // If the currentNode's right node is less than k, move right.
+            else if (currentNode.getRight().getKey().compareTo(k) < 0 
+                && !currentNode.getRight().getKey().getValue().equals(MAX_VALUE)) {
+                currentNode = currentNode.getRight();
+            }
+            // If the currentNode's right node is >= k, try and move down one level.
+            else {
+                // If we're at the bottom level, stop.
                 if (currentLevel == 1) {
-                    return null;
+                    // The right node be equal to k.
+                    if (currentNode.getRight().getKey().compareTo(k) == 0)
+                        return currentNode.getRight();
+                    // Otherwise, return the max node less than k.
+                    else
+                        return currentNode;
                 }
                 // If we're not at the bottom level, move down and keep searching.
                 else {
                     currentNode = currentNode.getBelow();
                     currentLevel--;
                 }
-            }
-            // If the currentNode's right node is less than k, move right.
-            else {
-                currentNode = currentNode.getRight();
             }
         }
     }
