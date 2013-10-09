@@ -32,7 +32,8 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         Map<Integer, List<Node>> rows = new HashMap<Integer, List<Node>>();
         while (true) {
             // If the currentNode's right node is less than k, move right.
-            if (currentNode.getRight().getKey().compareTo(k) < 0 && !currentNode.getRight().getKey().getValue().equals(MAX_VALUE)) {
+            if (currentNode.getRight().getKey().compareTo(k) < 0 
+                && !currentNode.getRight().getKey().getValue().equals(MAX_VALUE)) {
                 //log("Moving right.");
                 currentNode = currentNode.getRight();
             }
@@ -91,6 +92,24 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                         }
                     }
                     this.size++;
+                    // Begin debug printing.
+                    Node node = this.head;
+                    Node left = this.head;
+                    String s = "--------\n";
+                    int level = this.numLevels;
+                    while (level > 0) {
+                        while (node != null) {
+                            s += node.getKey().getValue() + " ";
+                            node = node.getRight();
+                        }
+                        level--;
+                        s += "\n";
+                        left = left.getBelow();
+                        node = left;
+                    }
+                    s += "--------\n";
+                    log(s);
+                    // End debug printing.
                     return;
                 }
             }
@@ -99,10 +118,22 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
-        // Start at the head, move right and down until we find k.
-        Node currentNode = this.head;
-
-
+        // Run nodeSearch() to find the node with k.
+        Node n = nodeSearch(k);
+        if (n.getKey().compareTo(k) == 0) {
+            // Found the node with k. Move to the top of its tower.
+            while (n.getAbove() != null) {
+                n = n.getAbove();
+            }
+            // Delete the node out of the current level and move down.
+            while (n != null) {
+                n.getLeft().setRight(n.getRight());
+                n.getRight().setLeft(n.getLeft());
+                n.setLeft(null);
+                n.setRight(null);
+                n = n.getBelow();
+            }
+        }
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
@@ -154,33 +185,92 @@ public class SkipListDynamicSet implements DynamicSet, Const {
     // Finds an Object that has the smallest key, and returns a pointer to it,
     // or null if the set is empty. 
     public Object minimum() {
+        Node n = nodeMinimum();
+        if (n != null)
+            return n.getKey();
         return null;
+    }
+
+    // Returns the min node or null if empty set.
+    private Node nodeMinimum() {
+        if (this.size == 0)
+            return null;
+        Node currentNode = this.head;
+        // Start at the head, go straight down to the bottom level.
+        while (currentNode.getBelow() != null) 
+            currentNode = currentNode.getBelow();
+        // Return the sentinel's right node's key.
+        return currentNode.getRight();
     }
                                                                                          
     // Finds an Object that has the largest key, and returns a pointer to it,
     // or null if the set is empty.
     public Object maximum() {
+        Node n = nodeMaximum();
+        if (n != null)
+            return n.getKey();
         return null;
+    }
+
+    // Returns the max node or null if empty set.
+    private Node nodeMaximum() {
+        if (this.size == 0)
+            return null;
+        // Start at the max sentinel and move down.
+        Node currentNode = this.head.getRight();
+        log("nodeMaximum: this.head.getRight(): " + currentNode.getKey().getValue());
+        while (currentNode.getBelow() != null) {
+            currentNode = currentNode.getBelow();
+            log("nodeMaximum: currentNode.getKey(): " + currentNode.getKey().getValue());
+        }
+        // Return the sentinel's left node's key.
+        return currentNode.getLeft();
     }
                                                                                                          
     // Finds an Object that has the next larger key in the set above k, 
     // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
-        return null;
+        if (this.size == 0)
+            return null;
+        Node n = nodeSearch(k);
+        // If nodeSearch didn't find the node with k, return null.
+        if (n.getKey().compareTo(k) != 0) {
+            return null;
+        }
+        else {
+            // If nodeSearch found the node with k, check if it's the max.
+            if (n == nodeMaximum())
+                return null;
+            return n.getRight().getKey();
+        }
     }
 
     // Finds an Object that has the next smaller key in the set below k,
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
-        return null;
+        if (this.size == 0)
+            return null;
+        Node n = nodeSearch(k);
+        // If nodeSearch didn't find the node with k, return null.
+        if (n.getKey().compareTo(k) != 0) {
+            return null;
+        }
+        // If n is the min element, return null.
+        if (n == nodeMinimum())
+            return null;
+        return n.getLeft().getKey();
     }
 
+    // Adds a new level to the skip list. Sets pointers and new head.
     private void addLevel() {
         Node newHead = new QuadNode(MIN_VALUE);
         Node newHeadRight = new QuadNode(MAX_VALUE);
         newHead.setBelow(this.head);
-        newHead.setRight(newHeadRight);
         this.head.setAbove(newHead);
+        newHead.setRight(newHeadRight);
+        newHeadRight.setLeft(newHead);
+        newHeadRight.setBelow(this.head.getRight());
+        this.head.getRight().setAbove(newHeadRight);
         this.head = newHead;
         this.numLevels++;
     }
