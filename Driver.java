@@ -12,7 +12,7 @@ import java.util.Random;
 public class Driver implements Const {
 
     private static String[] names;
-    private static Map<String, List> dict;
+    private static Map<String, List<Long>> dict;
     private static DynamicSet[] dynamicSets; 
 
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class Driver implements Const {
         // Load names into array.
         loadData(args[0]);
         // Create a map for organizing output.
-        dict = new HashMap<String, List>();
+        dict = new HashMap<String, List<Long>>();
         Scanner scan = new Scanner(System.in);
         dynamicSets = new DynamicSet[NUM_DATA_STRUCTURES];
         dynamicSets[0] = new DLLDynamicSet();
@@ -250,7 +250,7 @@ public class Driver implements Const {
     }
 
     private static long[] computeResults(String functionName, boolean loopEntireArray) {
-        List runTimes = dict.get(functionName);
+        List<Long> runTimes = dict.get(functionName);
         long min, max, avg = 0;
         min = max = (long)runTimes.get(0);
         int limit = loopEntireArray ? runTimes.size() : LIMIT;
