@@ -10,7 +10,7 @@ public interface Const {
     final String MIN     = "min";
     // Constants used in Driver.java.
     final int LIMIT = 10;
-    final int NUM_DATA_STRUCTURES = 2;
+    final int NUM_DATA_STRUCTURES = 3;
     // Sentinel values.
     final String MIN_VALUE = "NEGATIVE_INFINITY";
     final String MAX_VALUE = "POSITIVE_INFINITY";

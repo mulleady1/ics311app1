@@ -28,6 +28,7 @@ public class Driver implements Const {
         dynamicSets = new DynamicSet[NUM_DATA_STRUCTURES];
         dynamicSets[0] = new DLLDynamicSet();
         dynamicSets[1] = new SkipListDynamicSet();
+        dynamicSets[2] = new BSTDynamicSet();
         try {
             // App interface.
             while (true) {

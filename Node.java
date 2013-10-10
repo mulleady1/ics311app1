@@ -2,6 +2,7 @@ abstract class Node {
     protected Node left;
     protected Node right;
     protected KeyType key;
+    public Node() { }
     public Node(String s) { this.key = new KeyType(s); }
     public Node(KeyType k) { this.key = k; }
     public Node getLeft()   { return this.left; }
@@ -16,4 +17,8 @@ abstract class Node {
     abstract Node getBelow();
     abstract void setAbove(Node n);
     abstract void setBelow(Node n);
+    
+    // Abstract methods for BSTNode.
+    abstract Node getP();
+    abstract void setP(Node n);
 }
