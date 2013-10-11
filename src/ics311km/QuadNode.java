@@ -27,6 +27,13 @@
 
 package ics311km;
 
+/**
+ * QuadNode extends Node and is used in the SkipListDynamicSet implementation
+ * of DynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class QuadNode extends Node {
     private Node above;
     private Node below;

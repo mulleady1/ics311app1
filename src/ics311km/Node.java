@@ -27,27 +27,121 @@
 
 package ics311km;
 
-abstract class Node {
+/** 
+ * Node is the abstract class that defines the basic functionality of Node 
+ * objects used in implementations of the DynamicSet interface.
+ * In the ics311km package it is extended by {@link BSTNode}, {@link DLLNode}, 
+ * and {@link QuadNode}.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
+public abstract class Node {
     protected Node left;
     protected Node right;
     protected KeyType key;
+    /**
+     * Creates an empty node.
+     */
     public Node() { }
+    /**
+     * Creates a node and a KeyType object to store s.
+     *
+     * @param s  the String to be stored as this node's key.
+     */
     public Node(String s) { this.key = new KeyType(s); }
+    /**
+     * Creates a node and sets its key.
+     *
+     * @param k  this node's key
+     */
     public Node(KeyType k) { this.key = k; }
+    /**
+     * Returns this node's left node in DLLNode and QuadNode, 
+     * or this node's left child node in BSTNode.
+     *
+     * @return  the left node
+     */
     public Node getLeft()   { return this.left; }
+    /**
+     * Returns this node's right node in DLLNode and QuadNode, 
+     * or this node's right child node in BSTNode.
+     *
+     * @return  the right node
+     */
     public Node getRight()  { return this.right; }
+    /**
+     * Returns this node's key.
+     *
+     * @return  this node's key
+     */
     public KeyType getKey() { return this.key; }
+    /**
+     * Sets this node's left node in DLLNode and QuadNode, 
+     * or this node's left child node in BSTNode.
+     *
+     * @param n  the node to be set
+     */
     public void setLeft(Node n)   { this.left = n; }
+    /**
+     * Sets this node's right node in DLLNode and QuadNode, 
+     * or this node's right child node in BSTNode
+     *
+     * @param n  the node to be set
+     */
     public void setRight(Node n)  { this.right = n; }
+    /**
+     * Sets this node's key.
+     *
+     * @param k  the key to be set
+     */
     public void setKey(KeyType k) { this.key = k; }
     
     // Abstract methods for QuadNode.
+
+    /**
+     * Returns this node's above node in QuadNode.
+     * Not used by other classes that extend Node.
+     * 
+     * @return  this node's above node.
+     */
     abstract Node getAbove();
+    /**
+     * Returns this node's below node in QuadNode.
+     * Not used by other classes that extend Node.
+     *
+     * @return  this node's below node.
+     */
     abstract Node getBelow();
+    /**
+     * Sets this node's above node in QuadNode.
+     * Not used by other classes that extend Node.
+     *
+     * @param n  the node to be set
+     */
     abstract void setAbove(Node n);
+    /**
+     * Sets this node's below node in QuadNode.
+     * Not used by other classes that extend Node.
+     *
+     * @param n  the node to be set
+     */
     abstract void setBelow(Node n);
     
     // Abstract methods for BSTNode.
+
+    /**
+     * Returns this node's parent node in BSTNode.
+     * Not used by other classes that extend Node.
+     *
+     * @return  this node's parent node.
+     */
     abstract Node getP();
+    /**
+     * Sets this node's parent node in BSTNode.
+     * Not used by other classes that extend Node.
+     *
+     * @param n  the node to be set
+     */
     abstract void setP(Node n);
 }

@@ -27,23 +27,26 @@
 
 package ics311km;
 
+/** 
+ * BSTDynamicSet is the binary search tree implementation of DynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class BSTDynamicSet implements DynamicSet {
      
     private int size;
     private Node root;
 
-    // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public BSTDynamicSet() {
         this.size = 0;
         this.root = null;
     }
 
-    // Returns the number of elements currently in the set.
     public int size() {
         return this.size;
     }
 
-    // Inserts element e in the set under key k.
     public void insert(KeyType k, Object e) {
         // If the tree is empty, insert at the root.
         if (this.size == 0) {
@@ -77,7 +80,6 @@ public class BSTDynamicSet implements DynamicSet {
         this.size++;
     }
                                         
-    // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
         this.nodeDelete(k);
     }
@@ -124,8 +126,6 @@ public class BSTDynamicSet implements DynamicSet {
             newNode.setP(oldNode.getP());
     }
                                                    
-    // Finds an Object with key k and returns a pointer to it,
-    // or null if not found. 
     public Object search(KeyType k) {
         Node n = this.nodeSearch(k);
         return n != null ? n.getKey() : null;
@@ -153,10 +153,6 @@ public class BSTDynamicSet implements DynamicSet {
         return null;
     }
                                                                    
-    // The following operations apply when there is a total ordering on KeyType   
-                                                                         
-    // Finds an Object that has the smallest key, and returns a pointer to it,
-    // or null if the set is empty. 
     public Object minimum() {
         Node n = this.nodeMinimum(this.root);
         return n != null ? n.getKey() : null;
@@ -172,8 +168,6 @@ public class BSTDynamicSet implements DynamicSet {
         return n;
     }
                                                                                          
-    // Finds an Object that has the largest key, and returns a pointer to it,
-    // or null if the set is empty.
     public Object maximum() {
         Node n = this.nodeMaximum(this.root);
         return n != null ? n.getKey() : null;
@@ -189,8 +183,6 @@ public class BSTDynamicSet implements DynamicSet {
         return n;
     }
                                                                                                          
-    // Finds an Object that has the next larger key in the set above k, 
-    // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
         Node n = this.nodeSuccessor(k);
         return n != null ? n.getKey() : null;
@@ -212,8 +204,6 @@ public class BSTDynamicSet implements DynamicSet {
         return y;
     }
 
-    // Finds an Object that has the next smaller key in the set below k,
-    // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
         Node n = this.nodePredecessor(k);
         return n != null ? n.getKey() : null;

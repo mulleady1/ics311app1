@@ -27,13 +27,29 @@
 
 package ics311km;
 
+/** 
+ * BSTNode extends the abstract class Node and is used solely by BSTDynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class BSTNode extends Node {
+
+    /**
+     *  the parent node
+     */
     private Node p;
 
     public BSTNode() { }
     public BSTNode(String s)  { super(s); }
     public BSTNode(KeyType k) { super(k); }
+    /**
+     *  @return this node's parent node
+     */
     public Node getP() { return this.p; }
+    /**
+     *  @param sets this node's parent node.
+     */
     public void setP(Node n) { this.p = n; }
 
     // These methods are used in QuadNode only.

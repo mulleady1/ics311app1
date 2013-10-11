@@ -27,43 +27,75 @@
 
 package ics311km;
 
+/** 
+ * ADT that stores and retrieves Objects according to keys of type KeyType
+ * 
+ * @author Dan Suthers
+ * @version 1.0
+ */
 public interface DynamicSet {
-// ADT that stores and retrieves Objects according to keys of type KeyType
      
-    // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
+    /**
+     * Creates an instance of ADT DynamicSet and initializes it to the empty set.   
+     */
     //public DynamicSet(); 
 
+    /**
+     * @return  the number of elements currently in the set.
+     */
     public int size();
-    // Returns the number of elements currently in the set.
 
+    /**
+     * Inserts k.getValue() in the set under key k.
+     */
     public void insert(KeyType k, Object e); 
-    // Inserts element e in the set under key k.
                                         
+    /**
+     * Given a key k, removes elements indexed by k from the set.
+     */
     public void delete(KeyType k); 
-    // Given a key k, removes elements indexed by k from the set.
                                                    
+    /**
+     * Finds an Object with key k and returns a pointer to it,
+     * or null if not found. 
+     *
+     * @return  an Object to be casted to KeyType
+     */
     public Object search(KeyType k); 
-    // Finds an Object with key k and returns a pointer to it,
-    // or null if not found. 
                                                                    
     // The following operations apply when there is a total ordering on KeyType   
                                                                          
+    /**
+     * Finds an Object that has the smallest key, and returns a pointer to it,
+     * or null if the set is empty. 
+     *
+     * @return  an Object to be casted to KeyType
+     */
     public Object minimum(); 
-    // Finds an Object that has the smallest key, and returns a pointer to it,
-    // or null if the set is empty. 
                                                                                          
+    /**
+     * Finds an Object that has the largest key, and returns a pointer to it,
+     * or null if the set is empty. 
+     *
+     * @return  an Object to be casted to KeyType
+     */
     public Object maximum(); 
-    // Finds an Object that has the largest key, and returns a pointer to it,
-    // or null if the set is empty.
                                                                                                          
+    /**
+     * Finds an Object that has the next larger key in the set above k, 
+     * and returns a pointer to it, or null if k is the maximum element.
+     *
+     * @return  an Object to be casted to KeyType
+     */
     public Object successor(KeyType k); 
-    // Finds an Object that has the next larger key in the set above k, 
-    // and returns a pointer to it, or null if k is the maximum element.
 
+    /**
+     * Finds an Object that has the next smaller key in the set below k, 
+     * and returns a pointer to it, or null if k is the minimum element.
+     *
+     * @return  an Object to be casted to KeyType
+     */
     public Object predecessor(KeyType k); 
-    // Finds an Object that has the next smaller key in the set below k,
-    // and returns a pointer to it, or null if k is the minimum element.
-
 }
 
 

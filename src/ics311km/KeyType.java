@@ -27,6 +27,12 @@
 
 package ics311km;
 
+/** 
+ * KeyType is used throughout the ics311km package.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class KeyType implements Comparable<Object> {
 
     private String value;

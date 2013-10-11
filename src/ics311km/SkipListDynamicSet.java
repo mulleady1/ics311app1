@@ -32,13 +32,18 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * SkipListDynamicSet is the skip list implementation of DynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class SkipListDynamicSet implements DynamicSet, Const {
 
     private Node head;
     private int size;
     private int numLevels;
     
-    // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public SkipListDynamicSet() {
         this.head = new QuadNode(MIN_VALUE);
         this.head.setRight(new QuadNode(MAX_VALUE));
@@ -46,12 +51,10 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         this.numLevels = 1;
     }
 
-    // Returns the number of elements currently in the set.
     public int size() {
         return this.size;
     }
 
-    // Inserts element e in the set under key k.
     public void insert(KeyType k, Object e) {
         // Start at top left, work our way right and down.
         Node currentNode = this.head;
@@ -119,7 +122,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         }
     }
                                         
-    // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
         // Run nodeSearch() to find the node with k.
         Node n = nodeSearch(k);
@@ -156,8 +158,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         }
     }
                                                    
-    // Finds an Object with key k and returns a pointer to it,
-    // or null if not found. 
     public Object search(KeyType k) {
         Node n = nodeSearch(k);
         if (n.getKey().compareTo(k) != 0)
@@ -199,10 +199,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         }
     }
                                                                    
-    // The following operations apply when there is a total ordering on KeyType   
-                                                                         
-    // Finds an Object that has the smallest key, and returns a pointer to it,
-    // or null if the set is empty. 
     public Object minimum() {
         Node n = nodeMinimum();
         if (n == null)
@@ -222,8 +218,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         return currentNode.getRight();
     }
                                                                                          
-    // Finds an Object that has the largest key, and returns a pointer to it,
-    // or null if the set is empty.
     public Object maximum() {
         Node n = nodeMaximum();
         if (n == null)
@@ -244,8 +238,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         return currentNode.getLeft();
     }
                                                                                                          
-    // Finds an Object that has the next larger key in the set above k, 
-    // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
         if (this.size == 0)
             return null;
@@ -262,8 +254,6 @@ public class SkipListDynamicSet implements DynamicSet, Const {
         }
     }
 
-    // Finds an Object that has the next smaller key in the set below k,
-    // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
         if (this.size == 0)
             return null;

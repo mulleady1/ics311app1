@@ -27,8 +27,34 @@
 
 package ics311km;
 
-// Convenient place to store constants.
+/** 
+ * Const is an interface that defines the constants used throughout the 
+ * ics311km package.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public interface Const {
+    /**
+     * the sentinel value 'negative infinity'
+     */
+    final String MIN_VALUE = "NEGATIVE_INFINITY";
+    /**
+     * the sentinel value 'positive infinity'
+     */
+    final String MAX_VALUE = "POSITIVE_INFINITY";
+    /**
+     * used by SkipListDynamicSet for accessing left nodes in a tower.
+     */
+    final int LEFT = 0;
+    /**
+     * used by SkipListDynamicSet for accessing right nodes in a tower.
+     */
+    final int RIGHT = 1;
+
+    // Constants used in my Driver.java.
+    final int LIMIT = 10;
+    final int NUM_DATA_STRUCTURES = 3;
     final String RUNTEST = "runtest";
     final String INSERT  = "insert";
     final String SEARCH  = "search";
@@ -37,13 +63,4 @@ public interface Const {
     final String SUCC    = "succ";
     final String MAX     = "max";
     final String MIN     = "min";
-    // Constants used in my Driver.java.
-    final int LIMIT = 10;
-    final int NUM_DATA_STRUCTURES = 3;
-    // Sentinel values.
-    final String MIN_VALUE = "NEGATIVE_INFINITY";
-    final String MAX_VALUE = "POSITIVE_INFINITY";
-    // Constants used when prepping a tower of nodes in the skip list.
-    final int LEFT = 0;
-    final int RIGHT = 1;
 }

@@ -27,12 +27,17 @@
 
 package ics311km;
 
+/** 
+ * DLLDynamicSet is the doubly-linked list implementation of DynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class DLLDynamicSet implements DynamicSet, Const {
 
     private Node head;
     private int size;
 
-    // Creates an instance of ADT DynamicSet and initializes it to the empty set.   
     public DLLDynamicSet() {
         this.head = new DLLNode(MIN_VALUE);
         this.head.setRight(this.head);
@@ -40,12 +45,10 @@ public class DLLDynamicSet implements DynamicSet, Const {
         this.size = 0;
     }
 
-    // Returns the number of elements currently in the set.
     public int size() {
         return this.size;
     }
 
-    // Inserts element e in the set under key k.
     public void insert(KeyType k, Object o) {
         // Start at the first node, moving right until we find our insert point.
         Node currentNode = this.head.getRight();
@@ -62,7 +65,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
         this.size++;
     }
                                         
-    // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
         // Start at the first node, moving right until we find k.
         Node currentNode = this.head.getRight();
@@ -83,8 +85,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
         this.size--;
     }
                                                    
-    // Finds an Object with key k and returns a pointer to it,
-    // or null if not found. 
     public Object search(KeyType k) {
         // Start at the first node, moving right until we find k.
         Node currentNode = this.head.getRight();
@@ -99,10 +99,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
         return currentNode.getKey();
     }
                                                                    
-    // The following operations apply when there is a total ordering on KeyType   
-                                                                         
-    // Finds an Object that has the smallest key, and returns a pointer to it,
-    // or null if the set is empty. 
     public Object minimum() {
         if (this.size > 0)
             return this.head.getRight().getKey();
@@ -110,8 +106,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
             return null;
     }
                                                                                          
-    // Finds an Object that has the largest key, and returns a pointer to it,
-    // or null if the set is empty.
     public Object maximum() {
         if (this.size > 0)
             return this.head.getLeft().getKey();
@@ -119,8 +113,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
             return null;
     }
                                                                                                          
-    // Finds an Object that has the next larger key in the set above k, 
-    // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
         // If the head's left node is k, then k is the max element.
         if (this.head.getLeft().getKey().compareTo(k) == 0) {
@@ -142,8 +134,6 @@ public class DLLDynamicSet implements DynamicSet, Const {
         }
     }
 
-    // Finds an Object that has the next smaller key in the set below k,
-    // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
         // If the head's right node is k, then k is the min element.
         if (this.head.getRight().getKey().compareTo(k) == 0) {

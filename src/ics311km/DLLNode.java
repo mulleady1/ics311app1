@@ -27,6 +27,13 @@
 
 package ics311km;
 
+/** 
+ * DLLNode is the simplest class that extends Node. It is used solely
+ * by DLLDynamicSet.
+ *
+ * @author Kyle Mulleady
+ * @version 1.0
+ */
 public class DLLNode extends Node {
     public DLLNode(String s) { super(s); }
     public DLLNode(KeyType k) { super(k); }
