@@ -50,29 +50,45 @@ public class BSTDynamicSet implements DynamicSet {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
+        this.nodeDelete(k);
+    }
+
+    // Same concept from the book.
+    private void nodeDelete(KeyType k) {
         Node n = this.nodeSearch(k);
         // If the search was unsuccessful, we're done.
         if (n == null)
             return;
-        // If n has no children, just remove it.
-        if (n.getLeft() == null && n.getRight() == null) {
-            // Find out if n is a left or a right child.
-            if (n.getP().getLeft() == n)
-                n.getP().setLeft(null);
-            else
-                n.getP().setRight(null);
-            n.setP(null);
-            n = null;
+        // If n has no left child, replace it with its right child, which may be null.
+        if (n.getLeft() == null) {
+            this.transplant(n, n.getRight());
         }
-        // If n has children, replace it with its successor.
+        else if (n.getRight() == null) {
+            this.transplant(n, n.getLeft());
+        }
         else {
-            // Get n's successor and the child that will take the successor's place.
-            KeyType yKey = (KeyType)this.successor(k);
-            Node y = this.nodeSearch(yKey);
-            KeyType zKey = (KeyType)this.successor(yKey);
-            Node z = this.nodeSearch(zKey);
-
+            Node y = this.nodeMinimum(n.getRight());
+            if (y.getP() != n) {
+                this.transplant(y, y.getRight());
+                y.setRight(n.getRight());
+                y.getRight().setP(y);
+            }
+            this.transplant(n, y);
+            y.setLeft(n.getLeft());
+            y.getLeft().setP(y);
         }
+    }
+
+    // Straight from the book.
+    private void transplant(Node oldNode, Node newNode) {
+        if (oldNode.getP() == null)
+            this.root = newNode;
+        else if (oldNode == oldNode.getP().getLeft())
+            oldNode.getP().setLeft(newNode);
+        else 
+            oldNode.getP().setRight(newNode);
+        if (newNode != null)
+            newNode.setP(oldNode.getP());
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
