@@ -32,7 +32,7 @@ public class Driver implements Const {
         try {
             // App interface.
             while (true) {
-                log("\nAvailable commands: runtest insert search delete pred succ min max p");
+                log("\nAvailable commands: runtest insert search delete pred succ min max size p");
                 log("Press q <Enter> to quit.");
                 System.out.print("Enter a command: ");
                 // Execute command.
@@ -77,6 +77,10 @@ public class Driver implements Const {
         }
         else if (input.equals(MAX)) {
             max();
+        }
+        else if (input.equals("size")) {
+            for (DynamicSet ds : dynamicSets)
+                log(ds.getClass() + " size: " + ds.size());
         }
         else if (input.equals("p")) {
             for (DynamicSet ds : dynamicSets)

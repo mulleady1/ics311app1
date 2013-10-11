@@ -143,6 +143,7 @@ public class SkipListDynamicSet implements DynamicSet, Const {
                     this.numLevels--;
                 }
             }
+            this.size--;
         }
     }
                                                    

@@ -11,7 +11,7 @@ public class BSTDynamicSet implements DynamicSet {
 
     // Returns the number of elements currently in the set.
     public int size() {
-        return this.size();
+        return this.size;
     }
 
     // Inserts element e in the set under key k.
@@ -63,9 +63,12 @@ public class BSTDynamicSet implements DynamicSet {
         if (n.getLeft() == null) {
             this.transplant(n, n.getRight());
         }
+        // If n has no right child, replace it with its left child.
         else if (n.getRight() == null) {
             this.transplant(n, n.getLeft());
         }
+        // Otherwise, move n's successor's right child into n's successor's spot, and
+        // n's successor into n's spot, then rearrange pointers.
         else {
             Node y = this.nodeMinimum(n.getRight());
             if (y.getP() != n) {
@@ -77,6 +80,7 @@ public class BSTDynamicSet implements DynamicSet {
             y.setLeft(n.getLeft());
             y.getLeft().setP(y);
         }
+        this.size--;
     }
 
     // Straight from the book.
