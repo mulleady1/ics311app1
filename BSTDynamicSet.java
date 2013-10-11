@@ -50,17 +50,42 @@ public class BSTDynamicSet implements DynamicSet {
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
+        Node n = this.nodeSearch(k);
+        // If n has no children, just remove it.
+        if (n.getLeft() == null && n.getRight() == null) {
+            // Find out if n is a left or a right child.
+            if (n.getP().getLeft() == n)
+                n.getP().setLeft(null);
+            else
+                n.getP().setRight(null);
+            n.setP(null);
+            n = null;
+        }
+        // If n has children, replace it with its successor.
+        else {
+            // Get n's successor and the child that will take the successor's place.
+            KeyType yKey = (KeyType)this.successor(k);
+            Node y = this.nodeSearch(yKey);
+            KeyType zKey = (KeyType)this.successor(yKey);
+            Node z = this.nodeSearch(zKey);
+
+        }
     }
                                                    
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
+        return this.nodeSearch(k).getKey();
+    }
+
+    // Returns the node of interest.
+    private Node nodeSearch(KeyType k) {
         // Start at the root. 
         Node currentNode = this.root;
         // Make comparisons and move down the tree as necessary.
         while (currentNode != null) {
             if (currentNode.getKey().compareTo(k) == 0) {
-                return currentNode.getKey();
+                return currentNode;
             }
             else if (currentNode.getKey().compareTo(k) > 0) {
                 currentNode = currentNode.getLeft();
