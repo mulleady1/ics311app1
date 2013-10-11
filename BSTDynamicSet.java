@@ -45,12 +45,15 @@ public class BSTDynamicSet implements DynamicSet {
             previousNode.setLeft(currentNode);
         else
             previousNode.setRight(currentNode);
-        
+        this.size++;
     }
                                         
     // Given a key k, removes elements indexed by k from the set.
     public void delete(KeyType k) {
         Node n = this.nodeSearch(k);
+        // If the search was unsuccessful, we're done.
+        if (n == null)
+            return;
         // If n has no children, just remove it.
         if (n.getLeft() == null && n.getRight() == null) {
             // Find out if n is a left or a right child.
@@ -75,11 +78,14 @@ public class BSTDynamicSet implements DynamicSet {
     // Finds an Object with key k and returns a pointer to it,
     // or null if not found. 
     public Object search(KeyType k) {
-        return this.nodeSearch(k).getKey();
+        Node n = this.nodeSearch(k);
+        return n != null ? n.getKey() : null;
     }
 
     // Returns the node of interest.
     private Node nodeSearch(KeyType k) {
+        if (this.size == 0)
+            return null;
         // Start at the root. 
         Node currentNode = this.root;
         // Make comparisons and move down the tree as necessary.
@@ -94,6 +100,7 @@ public class BSTDynamicSet implements DynamicSet {
                 currentNode = currentNode.getRight();
             }
         }
+        // If we made it here, the search was unsuccessful.
         return null;
     }
                                                                    
@@ -102,33 +109,81 @@ public class BSTDynamicSet implements DynamicSet {
     // Finds an Object that has the smallest key, and returns a pointer to it,
     // or null if the set is empty. 
     public Object minimum() {
-        Node currentNode = this.root;
-        while (currentNode.getLeft() != null) {
-            currentNode = currentNode.getLeft();
+        Node n = this.nodeMinimum(this.root);
+        return n != null ? n.getKey() : null;
+    }
+
+    private Node nodeMinimum(Node n) {
+        if (this.size == 0)
+            return null;
+        // Move to the very bottom left of n's subtree.
+        while (n.getLeft() != null) {
+            n = n.getLeft();
         }
-        return currentNode.getKey();
+        return n;
     }
                                                                                          
     // Finds an Object that has the largest key, and returns a pointer to it,
     // or null if the set is empty.
     public Object maximum() {
-        Node currentNode = this.root;
-        while (currentNode.getRight() != null) {
-            currentNode = currentNode.getRight();
+        Node n = this.nodeMaximum(this.root);
+        return n != null ? n.getKey() : null;
+    }
+
+    private Node nodeMaximum(Node n) {
+        if (this.size == 0)
+            return null;
+        // Move to the very bottom right of n's subtree.
+        while (n.getRight() != null) {
+            n = n.getRight();
         }
-        return currentNode.getKey();
+        return n;
     }
                                                                                                          
     // Finds an Object that has the next larger key in the set above k, 
     // and returns a pointer to it, or null if k is the maximum element.
     public Object successor(KeyType k) {
-        return null;
+        Node n = this.nodeSuccessor(k);
+        return n != null ? n.getKey() : null;
+    }
+
+    private Node nodeSuccessor(KeyType k) {
+        Node n = this.nodeSearch(k);
+        if (n == null)
+            return null;
+        if (n.getRight() != null) {
+            Node max = this.nodeMinimum(n.getRight());
+            return max != null ? max : null;
+        }
+        Node y = n.getP();
+        while (y != null && n == y.getRight()) {
+            n = y;
+            y = y.getP();
+        }
+        return y;
     }
 
     // Finds an Object that has the next smaller key in the set below k,
     // and returns a pointer to it, or null if k is the minimum element.
     public Object predecessor(KeyType k) {
-        return null;
+        Node n = this.nodePredecessor(k);
+        return n != null ? n.getKey() : null;
+    }
+
+    private Node nodePredecessor(KeyType k) {
+        Node n = this.nodeSearch(k);
+        if (n == null)
+            return null;
+        if (n.getLeft() != null) {
+            Node min = this.nodeMaximum(n.getLeft());
+            return min != null ? min : null;
+        }
+        Node y = n.getP();
+        while (y != null && n == y.getLeft()) {
+            n = y;
+            y = y.getP();
+        }
+        return y;
     }
 
     public String toString() {
