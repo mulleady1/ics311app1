@@ -266,7 +266,7 @@ public class Driver implements Const {
             String line;
             // Load input file into a list.
             while ((line = br.readLine()) != null)
-                lines.add(line);
+                lines.add(line.trim());
 
             // Load global 'names' array.
             names = new String[lines.size()];
