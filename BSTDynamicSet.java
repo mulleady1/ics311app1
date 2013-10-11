@@ -77,13 +77,21 @@ public class BSTDynamicSet implements DynamicSet {
     // Finds an Object that has the smallest key, and returns a pointer to it,
     // or null if the set is empty. 
     public Object minimum() {
-        return null;
+        Node currentNode = this.root;
+        while (currentNode.getLeft() != null) {
+            currentNode = currentNode.getLeft();
+        }
+        return currentNode.getKey();
     }
                                                                                          
     // Finds an Object that has the largest key, and returns a pointer to it,
     // or null if the set is empty.
     public Object maximum() {
-        return null;
+        Node currentNode = this.root;
+        while (currentNode.getRight() != null) {
+            currentNode = currentNode.getRight();
+        }
+        return currentNode.getKey();
     }
                                                                                                          
     // Finds an Object that has the next larger key in the set above k, 

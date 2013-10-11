@@ -250,9 +250,11 @@ public class Driver implements Const {
     }
 
     private static long[] computeResults(String functionName, boolean loopEntireArray) {
+        // The hashmap contains the runtimes for each feature--insert, search, etc.
         List<Long> runTimes = dict.get(functionName);
         long min, max, avg = 0;
         min = max = (long)runTimes.get(0);
+        // For insert we run through the entire list; for others we only want 10.
         int limit = loopEntireArray ? runTimes.size() : LIMIT;
         for (int i = 1; i < limit; i++) {
             long time = (long)runTimes.get(i);
@@ -268,36 +270,45 @@ public class Driver implements Const {
     }
 
     private static void printResults() {
+        String insert = "";
+        String search = "";
+        String pred   = "";
+        String succ   = "";
+        String min    = "";
+        String max    = "";
         for (int i = 0; i < dynamicSets.length; i++) {
+            // Compute results.
             long[] insertResults = computeResults(INSERT+i, true);
             long[] searchResults = computeResults(SEARCH+i, false);
             long[] predResults   = computeResults(PRED+i, false);
             long[] succResults   = computeResults(SUCC+i, false);
 
-            String insert = insertResults[0] + " / " + insertResults[1]  + " / " + insertResults[2];
-            String search = searchResults[0] + " / " + searchResults[1] + " / " + searchResults[2];
-            String pred   = predResults[0]   + " / " + predResults[1]    + " / " + predResults[2];
-            String succ   = succResults[0]   + " / " + succResults[1]    + " / " + succResults[2];
-            String min    = dict.get(MIN+i).get(0).toString();
-            String max    = dict.get(MAX+i).get(0).toString();
-
-            log("Size: " + names.length);
-            log("---------------------------------------------------------");
-            log("            | LL       |  SK      |  BST     | RBT      |");
-            log("---------------------------------------------------------");
-            log("insert      | "+insert+"  |          |          |          |");
-            log("---------------------------------------------------------");
-            log("search      | "+search+" |          |          |          |");
-            log("---------------------------------------------------------");
-            log("predecessor | "+pred+" |          |          |          |");
-            log("---------------------------------------------------------");
-            log("successor   | "+succ+" |          |          |          |");
-            log("---------------------------------------------------------");
-            log("minimum     | "+min+"  |          |          |          |");
-            log("---------------------------------------------------------");
-            log("maximum     | "+max+"  |          |          |          |");
-            log("---------------------------------------------------------");
+            insert += insertResults[0] + "/" + insertResults[1]  + "/" + insertResults[2] + " | ";
+            search += searchResults[0] + "/" + searchResults[1] + "/" + searchResults[2] + " | ";
+            pred   += predResults[0]   + "/" + predResults[1]    + "/" + predResults[2] + " | ";
+            succ   += succResults[0]   + "/" + succResults[1]    + "/" + succResults[2] + " | ";
+            min    += dict.get(MIN+i).get(0).toString() + "             |   ";
+            max    += dict.get(MAX+i).get(0).toString() + "             |   ";
         }
+
+        log("Size: " + names.length);
+        log("------------------------------------------------------------------------------------");
+        log("            | LL               |   SK               |  BST               | RBT      |");
+        log("------------------------------------------------------------------------------------");
+        log("insert      | "+insert);
+        log("------------------------------------------------------------------------------------");
+        log("search      | "+search);
+        log("------------------------------------------------------------------------------------");
+        log("predecessor | "+pred);
+        log("------------------------------------------------------------------------------------");
+        log("successor   | "+succ);
+        log("------------------------------------------------------------------------------------");
+        log("minimum     | "+min);
+        log("------------------------------------------------------------------------------------");
+        log("maximum     | "+max);
+        log("------------------------------------------------------------------------------------");
+
+        // Clear the hashmap for the next test.
         dict.clear();
     }
 
