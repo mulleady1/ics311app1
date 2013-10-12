@@ -28,7 +28,11 @@
 package ics311km;
 
 /** 
- * KeyType is used throughout the ics311km package.
+ * KeyType is the type of object that gets inserted when you call DynamicSet.insert().
+ * <p>
+ * When you're using an Object returned from DynamicSet.search(), predecessor(), 
+ * successor(), minimum(), or maximum(), cast it into a KeyType object. At that point
+ * you can use KeyType.getValue() to get the person's name stored in that object.
  *
  * @author Kyle Mulleady
  * @version 1.0
