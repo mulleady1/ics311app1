@@ -137,6 +137,57 @@ public class RedBlackDynamicSet extends BST {
     }
 
     private void deleteFix(Node n) {
+        while (n != this.root && !n.isRed()) {
+            if (n == n.getP().getLeft()) {
+                Node w = n.getP().getRight();
+                if (w.isRed()) {
+                    w.isRed(false);
+                    n.getP().isRed(true);
+                    this.leftRotate(n.getP());
+                    w = n.getP().getRight();
+                }
+                if (!w.getLeft().isRed() && !w.getRight().isRed()) {
+                    w.isRed(true);
+                    n = n.getP();
+                }
+                else if (!w.getRight().isRed()) {
+                    w.getLeft().isRed(false);
+                    w.isRed(true);
+                    this.rightRotate(w);
+                    w = n.getP().getRight();
+                }
+                w.isRed(n.getP().isRed());
+                n.getP().isRed(false);
+                w.getRight().isRed(false);
+                this.leftRotate(n.getP());
+                n = this.root;
+            }
+            else {
+                Node w = n.getP().getLeft();
+                if (w.isRed()) {
+                    w.isRed(false);
+                    n.getP().isRed(true);
+                    this.rightRotate(n.getP());
+                    w = n.getP().getLeft();
+                }
+                if (!w.getRight().isRed() && !w.getLeft().isRed()) {
+                    w.isRed(true);
+                    n = n.getP();
+                }
+                else if (!w.getLeft().isRed()) {
+                    w.getRight().isRed(false);
+                    w.isRed(true);
+                    this.leftRotate(w);
+                    w = n.getP().getLeft();
+                }
+                w.isRed(n.getP().isRed());
+                n.getP().isRed(false);
+                w.getLeft().isRed(false);
+                this.rightRotate(n.getP());
+                n = this.root;
+            }
+        }
+        n.isRed(false);
     }
 
 }
