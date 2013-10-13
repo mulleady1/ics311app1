@@ -54,7 +54,7 @@ public interface Const {
 
     // Constants used in my Driver.java.
     final int LIMIT = 10;
-    final int NUM_DATA_STRUCTURES = 3;
+    final int NUM_DATA_STRUCTURES = 4;
     final String RUNTEST = "runtest";
     final String INSERT  = "insert";
     final String SEARCH  = "search";

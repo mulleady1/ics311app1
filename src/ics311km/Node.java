@@ -144,4 +144,21 @@ public abstract class Node {
      * @param n  the node to be set
      */
     abstract void setP(Node n);
+
+    // Abstract methods for RBNode.
+
+    /**
+     * Returns this node's color in RBNode.
+     * Not used by other classes that extend Node.
+     *
+     * @return  true if this node is red, false if black
+     */
+    abstract boolean isRed();
+    /**
+     * Sets this node's color in RBNode.
+     * Not used by other classes that extend Node.
+     *
+     * @param b  true is this node is red, false if black
+     */
+    abstract void isRed(boolean b);
 }

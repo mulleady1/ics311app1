@@ -45,7 +45,9 @@ public class QuadNode extends Node {
     public void setAbove(Node n) { this.above = n; }
     public void setBelow(Node n) { this.below = n; }
 
-    // These methods are used in BSTNode only.
+    // These methods are not used in QuadNode.
     public Node getP() { throw new UnsupportedOperationException(); }
     public void setP(Node n) { throw new UnsupportedOperationException(); }
+    public boolean isRed() { throw new UnsupportedOperationException(); }
+    public void isRed(boolean b) { throw new UnsupportedOperationException(); }
 }

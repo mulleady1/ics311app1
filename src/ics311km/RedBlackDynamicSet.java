@@ -33,74 +33,110 @@ package ics311km;
  * @author Kyle Mulleady
  * @version 1.0
  */
-public class RedBlackDynamicSet implements DynamicSet {
+public class RedBlackDynamicSet extends BST {
 
-    private Node root;
-    private int size;
-     
     public RedBlackDynamicSet() {
-    }
-
-    public int size() {
-        return this.size;
+        this.root = null;
+        this.size = 0;
     }
 
     public void insert(KeyType k, Object e) {
+        Node n = this.nodeInsert(k, true);
+        n.isRed(true);
+        this.insertFix(n);
     }
 
-    private void insert(KeyType k) {
-    }
-
-    private void insertFix() {
-    }
-                                        
     public void delete(KeyType k) {
+        this.nodeDelete(k);
+        // Finish this.
     }
-                                                   
+
+    // Very similar to RB-INSERT-FIXUP from the book.
+    private void insertFix(Node n) {
+        while (n != this.root && n.getP() != this.root && n.getP().isRed()) {
+            if (n.getP() == n.getP().getP().getLeft()) {
+                Node y = n.getP().getP().getRight();
+                if (y != null && y.isRed()) {
+                    n.getP().isRed(false);
+                    y.isRed(false);
+                    n.getP().getP().isRed(true);
+                    n = n.getP().getP();
+                }
+                else if (n == n.getP().getRight()) {
+                    n = n.getP();
+                    this.leftRotate(n);
+                }
+                if (n.getP() != null) {
+                    n.getP().isRed(false);
+                    if (n.getP().getP() != null) {
+                        n.getP().getP().isRed(true);
+                        this.rightRotate(n.getP().getP());
+                    }
+                }
+            }
+            else {
+                Node y = n.getP().getP().getLeft();
+                if (y != null && y.isRed()) {
+                    n.getP().isRed(false);
+                    y.isRed(false);
+                    n.getP().getP().isRed(true);
+                    n = n.getP().getP();
+                }
+                else if (n == n.getP().getLeft()) {
+                    n = n.getP();
+                    this.rightRotate(n);
+                }
+                if (n.getP() != null) {
+                    n.getP().isRed(false);
+                    if (n.getP().getP() != null) {
+                        n.getP().getP().isRed(true);
+                        this.leftRotate(n.getP().getP());
+                    }
+                }
+            }
+        }
+        this.root.isRed(false);
+    }
+
+    private void leftRotate(Node n) {
+        if (n.getRight() != null) {
+            Node y = n.getRight();
+            n.setRight(y.getLeft());
+            if (y.getLeft() != null)
+                y.getLeft().setP(n);
+            y.setP(n.getP());
+            if (n.getP() == null)
+                this.root = y;
+            else if (n == n.getP().getLeft())
+                n.getP().setLeft(y);
+            else
+                n.getP().setRight(y);
+            y.setLeft(n);
+            n.setP(y);
+        }
+    }
+
+    private void rightRotate(Node n) {
+        if (n.getLeft() != null) {
+            Node y = n.getLeft();
+            n.setLeft(y.getRight());
+            if (y.getRight() != null)
+                y.getRight().setP(n);
+            y.setP(n.getP());
+            if (n.getP() == null)
+                this.root = y;
+            else if (n == n.getP().getRight())
+                n.getP().setRight(y);
+            else
+                n.getP().setLeft(y);
+            y.setRight(n);
+            n.setP(y);
+        }
+    }
+
     private void deleteFix() {
     }
 
-    public Object search(KeyType k) {
-        return null;
-    }
-
-    // Returns the node of interest.
-    private Node nodeSearch(KeyType k) {
-        if (this.size == 0)
-            return null;
-        // Start at the root. 
-        Node currentNode = this.root;
-        // Make comparisons and move down the tree as necessary.
-        while (currentNode != null) {
-            if (currentNode.getKey().compareTo(k) == 0) {
-                return currentNode;
-            }
-            else if (currentNode.getKey().compareTo(k) > 0) {
-                currentNode = currentNode.getLeft();
-            }
-            else {
-                currentNode = currentNode.getRight();
-            }
-        }
-        // If we made it here, the search was unsuccessful.
-        return null;
-    }
-                                                                   
-    public Object minimum() {
-        return null;
-    }
-                                                                                         
-    public Object maximum() {
-        return null;
-    }
-                                                                                                         
-    public Object successor(KeyType k) {
-        return null;
-    }
-
-    public Object predecessor(KeyType k) {
-        return null;
-    }
 }
 
 

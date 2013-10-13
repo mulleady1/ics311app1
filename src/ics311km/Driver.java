@@ -58,6 +58,7 @@ public class Driver implements Const {
         dynamicSets[0] = new DLLDynamicSet();
         dynamicSets[1] = new SkipListDynamicSet();
         dynamicSets[2] = new BSTDynamicSet();
+        dynamicSets[3] = new RedBlackDynamicSet();
         try {
             // App interface.
             while (true) {
@@ -116,8 +117,16 @@ public class Driver implements Const {
                 log(ds.getClass() + " size: " + ds.size());
         }
         else if (input.equals("p")) {
-            for (DynamicSet ds : dynamicSets)
-                log(ds.getClass() + ": " + ds);
+            for (DynamicSet ds : dynamicSets) {
+                if (ds instanceof BSTDynamicSet || ds instanceof RedBlackDynamicSet) {
+                    System.out.print(ds.getClass() + ": ");
+                    System.out.print(ds);
+                    log("\n");
+                }
+                else {
+                    log(ds.getClass() + ": " + ds + "\n");
+                }
+            }
         }
         else {
             log("Unknown command.");

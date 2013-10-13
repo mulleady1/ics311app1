@@ -28,35 +28,33 @@
 package ics311km;
 
 /** 
- * BSTNode extends the abstract class Node and is used solely by BSTDynamicSet.
+ * RBNode extends the abstract class Node and is used solely by RedBlackDynamicSet.
  *
  * @author Kyle Mulleady
  * @version 1.0
  */
-public class BSTNode extends Node {
+public class RBNode extends Node {
 
     /**
-     *  the parent node
+     * the parent node
      */
     private Node p;
-
-    public BSTNode() { }
-    public BSTNode(String s)  { super(s); }
-    public BSTNode(KeyType k) { super(k); }
     /**
-     *  @return this node's parent node
+     * boolean value for keeping track of red and black nodes
      */
+    private boolean isRed;
+
+    public RBNode() { }
+    public RBNode(String s)  { super(s); }
+    public RBNode(KeyType k) { super(k); }
     public Node getP() { return this.p; }
-    /**
-     *  @param sets this node's parent node.
-     */
     public void setP(Node n) { this.p = n; }
+    public boolean isRed() { return this.isRed; }
+    public void isRed(boolean b) { this.isRed = b; }
 
-    // These methods are not used in BSTNode.
+    // These methods are used in QuadNode only.
     public Node getAbove() { throw new UnsupportedOperationException(); }
     public Node getBelow() { throw new UnsupportedOperationException(); }
     public void setAbove(Node n) { throw new UnsupportedOperationException(); }
     public void setBelow(Node n) { throw new UnsupportedOperationException(); }
-    public boolean isRed() { throw new UnsupportedOperationException(); }
-    public void isRed(boolean b) { throw new UnsupportedOperationException(); }
 }
