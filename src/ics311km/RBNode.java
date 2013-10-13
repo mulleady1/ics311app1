@@ -28,17 +28,13 @@
 package ics311km;
 
 /** 
- * RBNode extends the abstract class Node and is used solely by RedBlackDynamicSet.
+ * RBNode extends BSTNode and is used solely by RedBlackDynamicSet.
  *
  * @author Kyle Mulleady
  * @version 1.0
  */
-public class RBNode extends Node {
+public class RBNode extends BSTNode {
 
-    /**
-     * the parent node
-     */
-    private Node p;
     /**
      * boolean value for keeping track of red and black nodes
      */
@@ -47,14 +43,6 @@ public class RBNode extends Node {
     public RBNode() { }
     public RBNode(String s)  { super(s); }
     public RBNode(KeyType k) { super(k); }
-    public Node getP() { return this.p; }
-    public void setP(Node n) { this.p = n; }
     public boolean isRed() { return this.isRed; }
     public void isRed(boolean b) { this.isRed = b; }
-
-    // These methods are used in QuadNode only.
-    public Node getAbove() { throw new UnsupportedOperationException(); }
-    public Node getBelow() { throw new UnsupportedOperationException(); }
-    public void setAbove(Node n) { throw new UnsupportedOperationException(); }
-    public void setBelow(Node n) { throw new UnsupportedOperationException(); }
 }

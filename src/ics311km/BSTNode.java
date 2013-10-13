@@ -43,13 +43,7 @@ public class BSTNode extends Node {
     public BSTNode() { }
     public BSTNode(String s)  { super(s); }
     public BSTNode(KeyType k) { super(k); }
-    /**
-     *  @return this node's parent node
-     */
     public Node getP() { return this.p; }
-    /**
-     *  @param sets this node's parent node.
-     */
     public void setP(Node n) { this.p = n; }
 
     // These methods are not used in BSTNode.
