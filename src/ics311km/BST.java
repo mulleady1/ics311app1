@@ -134,10 +134,12 @@ public abstract class BST implements DynamicSet {
         currentNode = isRBNode ? new RBNode(k) : new BSTNode(k);
         currentNode.setP(previousNode);
         // Determine whether currentNode will be the left or right child of its parent.
-        if (previousNode.getKey().compareTo(k) > 0)
-            previousNode.setLeft(currentNode);
-        else
-            previousNode.setRight(currentNode);
+        if (previousNode != null) {
+            if (previousNode.getKey().compareTo(k) > 0)
+                previousNode.setLeft(currentNode);
+            else
+                previousNode.setRight(currentNode);
+        }
         this.size++;
         return currentNode;
     }
@@ -145,26 +147,46 @@ public abstract class BST implements DynamicSet {
     /**
      * Upon successful search for the node n with key k, deletes n.
      *
-     * @param k  the key of the node to be deleted
+     * @param k        the key of the node to be deleted
+     * @param isRBNode true if inserting into a red-black tree, false if inserting 
+     *                 into a standard binary search tree
+     * @return         the node to be passed to <code>deleteFix</code>; only used 
+     *                 for red-black trees
      */
-    protected void nodeDelete(KeyType k) {
+    protected Node nodeDelete(KeyType k, boolean isRBNode) {
         Node n = this.nodeSearch(k);
         // If the search was unsuccessful, we're done.
         if (n == null)
-            return;
+            return null;
+        Node x, y = n;
+        // Store the original color if we're dealing with a red-black node.
+        boolean yOriginalIsRed = false;
+        if (isRBNode)
+            yOriginalIsRed = y.isRed();
         // If n has no left child, replace it with its right child, which may be null.
         if (n.getLeft() == null) {
+            x = n.getRight();
             this.transplant(n, n.getRight());
         }
         // If n has no right child, replace it with its left child.
         else if (n.getRight() == null) {
+            x = n.getLeft();
             this.transplant(n, n.getLeft());
         }
         // Otherwise, move n's successor's right child into n's successor's spot, and
         // n's successor into n's spot, then rearrange pointers.
         else {
-            Node y = this.nodeMinimum(n.getRight());
-            if (y.getP() != n) {
+            y = this.nodeMinimum(n.getRight());
+            if (isRBNode) {
+                yOriginalIsRed = y.isRed();
+            }
+            x = y.getRight();
+            if (y.getP() == n) {
+                if (x != null) {
+                    x.setP(y);
+                }
+            }
+            else {
                 this.transplant(y, y.getRight());
                 y.setRight(n.getRight());
                 y.getRight().setP(y);
@@ -172,8 +194,15 @@ public abstract class BST implements DynamicSet {
             this.transplant(n, y);
             y.setLeft(n.getLeft());
             y.getLeft().setP(y);
+            if (isRBNode) {
+                y.isRed(n.isRed());
+            }
         }
         this.size--;
+        if (isRBNode && !yOriginalIsRed) {
+            return x;
+        }
+        return null;
     }
 
     // Straight from the book.
@@ -189,7 +218,7 @@ public abstract class BST implements DynamicSet {
     }
 
     protected Node nodeMinimum(Node n) {
-        if (this.size == 0)
+        if (n == null)
             return null;
         // Move to the very bottom left of n's subtree.
         while (n.getLeft() != null) {
@@ -199,7 +228,7 @@ public abstract class BST implements DynamicSet {
     }
 
     protected Node nodeMaximum(Node n) {
-        if (this.size == 0)
+        if (n == null)
             return null;
         // Move to the very bottom right of n's subtree.
         while (n.getRight() != null) {

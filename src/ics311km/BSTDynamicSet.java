@@ -45,6 +45,6 @@ public class BSTDynamicSet extends BST {
     }
 
     public void delete(KeyType k) {
-        this.nodeDelete(k);
+        this.nodeDelete(k, false);
     }
 }

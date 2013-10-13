@@ -47,8 +47,9 @@ public class RedBlackDynamicSet extends BST {
     }
 
     public void delete(KeyType k) {
-        this.nodeDelete(k);
-        // Finish this.
+        Node n = this.nodeDelete(k, true);
+        if (n != null)
+            this.deleteFix(n);
     }
 
     // Very similar to RB-INSERT-FIXUP from the book.
@@ -95,7 +96,8 @@ public class RedBlackDynamicSet extends BST {
                 }
             }
         }
-        this.root.isRed(false);
+        if (this.root != null)
+            this.root.isRed(false);
     }
 
     private void leftRotate(Node n) {
@@ -134,7 +136,7 @@ public class RedBlackDynamicSet extends BST {
         }
     }
 
-    private void deleteFix() {
+    private void deleteFix(Node n) {
     }
 
 }
