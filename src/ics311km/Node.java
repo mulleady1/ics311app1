@@ -31,7 +31,7 @@ package ics311km;
  * Node is the abstract class that defines the basic functionality of Node 
  * objects used in implementations of the DynamicSet interface.
  * In the ics311km package it is extended by {@link BSTNode}, {@link DLLNode}, 
- * and {@link QuadNode}.
+ * {@link QuadNode}, and {@link RBNode}.
  *
  * @author Kyle Mulleady
  * @version 1.0
@@ -58,14 +58,14 @@ public abstract class Node {
     public Node(KeyType k) { this.key = k; }
     /**
      * Returns this node's left node in DLLNode and QuadNode, 
-     * or this node's left child node in BSTNode.
+     * or this node's left child node in BSTNode and RBNode.
      *
      * @return  the left node
      */
     public Node getLeft()   { return this.left; }
     /**
      * Returns this node's right node in DLLNode and QuadNode, 
-     * or this node's right child node in BSTNode.
+     * or this node's right child node in BSTNode and RBNode.
      *
      * @return  the right node
      */
@@ -78,14 +78,14 @@ public abstract class Node {
     public KeyType getKey() { return this.key; }
     /**
      * Sets this node's left node in DLLNode and QuadNode, 
-     * or this node's left child node in BSTNode.
+     * or this node's left child node in BSTNode and RBNode.
      *
      * @param n  the node to be set
      */
     public void setLeft(Node n)   { this.left = n; }
     /**
      * Sets this node's right node in DLLNode and QuadNode, 
-     * or this node's right child node in BSTNode
+     * or this node's right child node in BSTNode and RBNode.
      *
      * @param n  the node to be set
      */
@@ -131,14 +131,14 @@ public abstract class Node {
     // Abstract methods for BSTNode.
 
     /**
-     * Returns this node's parent node in BSTNode.
+     * Returns this node's parent node in BSTNode and RBNode.
      * Not used by other classes that extend Node.
      *
      * @return  this node's parent node.
      */
     abstract Node getP();
     /**
-     * Sets this node's parent node in BSTNode.
+     * Sets this node's parent node in BSTNode and RBNode.
      * Not used by other classes that extend Node.
      *
      * @param n  the node to be set
