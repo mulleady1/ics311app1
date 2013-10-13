@@ -103,8 +103,10 @@ public abstract class BST implements DynamicSet {
      * Traverses the tree, finds the appropriate insertion point,
      * then inserts a new node with key k.
      *
-     * @param k  the key of the node to be inserted
-     * @return   the node inserted
+     * @param k        the key of the node to be inserted
+     * @param isRBNode true if inserting into a red-black tree, false if
+     *                 inserting into a standard binary search tree
+     * @return         the node inserted
      */
     protected Node nodeInsert(KeyType k, boolean isRBNode) {
         // If the tree is empty, insert at the root.
