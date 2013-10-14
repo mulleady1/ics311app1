@@ -1,7 +1,8 @@
 #!/bin/sh
 
+echo "\nCompiling and running Kyle Mulleady's \"Battle of the Dynamic Sets\" on input file $1..."
 cd src && \
 javac -d ../bin/ ics311km/*.java && \
 cd ../bin/ && \
-java ics311km/Driver ../$1 && \
+java ics311km/Driver ../$1 $2 $3 && \
 cd ..

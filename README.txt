@@ -1,5 +1,16 @@
-IMPORTANT
----------
+MESSAGE FOR THE TA
+------------------
+The easiest way to compile/run my project is to use the little compile-and-run 
+script I wrote. From my ics311app1 directory, type
+
+    ./run names_sorted.txt
+
+...or whichever input file you want to pass for an argument. I tested my code
+on uhunix, so there shouldn't be any issues.
+
+
+MESSAGE FOR ANYONE USING MY FILES FOR OPEN SOURCE IMPLEMENTATIONS
+-----------------------------------------------------------------
 The DynamicSet interface declares that search(), minimum(), maximum(),
 successor(), and predecessor() all return an Object. My implementations of
 DynamicSet return an Object that can be casted to a KeyType. You can and 
@@ -10,8 +21,8 @@ getValue() method to get the data that was inserted.
 ABOUT THESE FILES
 -----------------
 The java files in the ics311km directory are my open source implementations
-of the data structures for Assignment 1. You can use them for your project,
-which is a win-win for both of us:
+of the data structures for Project 1: Battle of the Dynamic Sets. You can use 
+them for your project, which is a win-win for both of us:
 
 - You have much less code to write now
 - I get extra credit because you're using my code

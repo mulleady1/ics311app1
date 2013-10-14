@@ -45,7 +45,7 @@ public class Driver implements Const {
     private static DynamicSet[] dynamicSets; 
 
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length < 1) {
             log("Usage: java Driver <inputfile>");
             System.exit(1);
         }
@@ -62,11 +62,18 @@ public class Driver implements Const {
         try {
             // App interface.
             while (true) {
-                log("\nAvailable commands: runtest insert search delete pred succ min max size p");
-                log("Press q <Enter> to quit.");
-                System.out.print("Enter a command: ");
-                // Execute command.
-                runCommand(scan.nextLine().trim());
+                // If multiple arguments were passed then we're bypassing the normal interface.
+                if (args.length > 1) {
+                    runCommand(args[1]);
+                    runCommand(args[2]);
+                }
+                else {
+                    log("\nAvailable commands: runtest insert search delete pred succ min max size p");
+                    log("Press q <Enter> to quit.");
+                    System.out.print("Enter a command: ");
+                    // Execute command.
+                    runCommand(scan.nextLine().trim());
+                }
             }
         }
         catch (NoSuchElementException e) {
@@ -310,7 +317,7 @@ public class Driver implements Const {
     }
 
     private static String fixSpacing(String s) {
-        while (s.length() < 20) {
+        while (s.length() < 22) {
             s += " ";
         }
         s += "| ";
@@ -324,7 +331,7 @@ public class Driver implements Const {
                succTot   = "", 
                minTot    = "", 
                maxTot    = "";
-        String sep = "----------------------------------------------------------------------------------------------------";
+        String sep = "------------------------------------------------------------------------------------------------------------";
         for (int i = 0; i < dynamicSets.length; i++) {
             // Compute results.
             long[] insertResults = computeResults(INSERT+i);
@@ -350,7 +357,7 @@ public class Driver implements Const {
 
         log("Size: " + names.length);
         log(sep);
-        log("            | LL                  |  SK                 |  BST                | RBT                 |");
+        log("            | LL                    |  SK                   |  BST                  | RBT                   |");
         log(sep);
         log("insert      | "+insertTot);
         log(sep);
