@@ -137,14 +137,18 @@ public class Driver implements Const {
     private static void runtest() {
         // Loop through each implementation of DynamicSet.
         for (int i = 0; i < dynamicSets.length; i++) {
-            // List for storing returned keys.
-            List<Object> keyTypes = new ArrayList<Object>();
+            DynamicSet ds = dynamicSets[i];
             // long variables for timing method calls.
             long start, runtime;
-            // List for storing runtimes.
+            // Lists for storing runtimes.
             List<Long> insertTimes = new ArrayList<Long>();
-            // First DynamicSet is the linked list implementation.
-            DynamicSet ds = dynamicSets[i];
+            List<Long> searchTimes = new ArrayList<Long>();
+            List<Long> predTimes   = new ArrayList<Long>();
+            List<Long> succTimes   = new ArrayList<Long>();
+            List<Long> minTimes    = new ArrayList<Long>();
+            List<Long> maxTimes    = new ArrayList<Long>();
+            // List for storing returned keys.
+            List<Object> keyTypes  = new ArrayList<Object>();
             // For loop for 'insert'.
             for (int j = 0; j < names.length; j++) {
                 KeyType k = new KeyType(names[j]);
@@ -156,7 +160,6 @@ public class Driver implements Const {
             // Add 'insert' runtimes to map.
             dict.put(INSERT+i, insertTimes);
             Random rand = new Random();
-            List<Long> searchTimes = new ArrayList<Long>();
             // For loop for 'search'.
             for (int j = 0; j < LIMIT; j++) {
                 int randomInt = rand.nextInt(names.length);
@@ -169,7 +172,6 @@ public class Driver implements Const {
             }
             // Add 'search' runtimes to map.
             dict.put(SEARCH+i, searchTimes);
-            List<Long> predTimes = new ArrayList<Long>();
             // For loop for 'pred'.
             for (int j = 0; j < keyTypes.size(); j++) {
                 KeyType k = (KeyType)keyTypes.get(j);
@@ -180,7 +182,6 @@ public class Driver implements Const {
             }
             // Add 'pred' runtimes to map.
             dict.put(PRED+i, predTimes);
-            List<Long> succTimes = new ArrayList<Long>();
             // For loop for 'succ'.
             for (int j = 0; j < keyTypes.size(); j++) {
                 KeyType k = (KeyType)keyTypes.get(j);
@@ -192,14 +193,12 @@ public class Driver implements Const {
             // Add 'succ' runtimes to map.
             dict.put(SUCC+i, succTimes);
             // Run min.
-            List<Long> minTimes = new ArrayList<Long>();
             start = System.nanoTime();
             ds.minimum();
             runtime = System.nanoTime() - start;
             minTimes.add(runtime);
             dict.put(MIN+i, minTimes);
             // Run max.
-            List<Long> maxTimes = new ArrayList<Long>();
             start = System.nanoTime();
             ds.maximum();
             runtime = System.nanoTime() - start;
@@ -291,14 +290,13 @@ public class Driver implements Const {
         }
     }
 
-    private static long[] computeResults(String functionName, boolean loopEntireArray) {
-        // The hashmap contains the runtimes for each feature--insert, search, etc.
+    private static long[] computeResults(String functionName) {
+        // The 'dict' map contains the runtimes for each feature--insert, search, etc.
         List<Long> runTimes = dict.get(functionName);
         long min, max, avg = 0;
         min = max = (long)runTimes.get(0);
-        // For insert we run through the entire list; for others we only want 10.
-        int limit = loopEntireArray ? runTimes.size() : LIMIT;
-        for (int i = 1; i < limit; i++) {
+        // Find min, max, and average values.
+        for (int i = 1; i < runTimes.size(); i++) {
             long time = (long)runTimes.get(i);
             if (time < min)
                 min = time;
@@ -311,47 +309,63 @@ public class Driver implements Const {
         return new long[] { min, max, avg };
     }
 
+    private static String fixSpacing(String s) {
+        while (s.length() < 20) {
+            s += " ";
+        }
+        s += "| ";
+        return s;
+    }
+
     private static void printResults() {
-        String insert = "";
-        String search = "";
-        String pred   = "";
-        String succ   = "";
-        String min    = "";
-        String max    = "";
-        String sep = "------------------------------------------------------------------------------------------------";
+        String insertTot = "", 
+               searchTot = "", 
+               predTot   = "", 
+               succTot   = "", 
+               minTot    = "", 
+               maxTot    = "";
+        String sep = "----------------------------------------------------------------------------------------------------";
         for (int i = 0; i < dynamicSets.length; i++) {
             // Compute results.
-            long[] insertResults = computeResults(INSERT+i, true);
-            long[] searchResults = computeResults(SEARCH+i, false);
-            long[] predResults   = computeResults(PRED+i, false);
-            long[] succResults   = computeResults(SUCC+i, false);
+            long[] insertResults = computeResults(INSERT+i);
+            long[] searchResults = computeResults(SEARCH+i);
+            long[] predResults   = computeResults(PRED+i);
+            long[] succResults   = computeResults(SUCC+i);
 
-            insert += insertResults[0] + "/" + insertResults[1]  + "/" + insertResults[2] + " | ";
-            search += searchResults[0] + "/" + searchResults[1] + "/" + searchResults[2] + " | ";
-            pred   += predResults[0]   + "/" + predResults[1]    + "/" + predResults[2] + " | ";
-            succ   += succResults[0]   + "/" + succResults[1]    + "/" + succResults[2] + " | ";
-            min    += dict.get(MIN+i).get(0).toString() + "             |   ";
-            max    += dict.get(MAX+i).get(0).toString() + "             |   ";
+            String insert = insertResults[0] + "/" + insertResults[1]  + "/" + insertResults[2];
+            String search = searchResults[0] + "/" + searchResults[1] + "/" + searchResults[2];
+            String pred   = predResults[0]   + "/" + predResults[1]    + "/" + predResults[2];
+            String succ   = succResults[0]   + "/" + succResults[1]    + "/" + succResults[2];
+            String min    = dict.get(MIN+i).get(0).toString();
+            String max    = dict.get(MAX+i).get(0).toString();
+
+            // Make spacing nice and pretty.
+            insertTot += fixSpacing(insert);
+            searchTot += fixSpacing(search);
+            predTot   += fixSpacing(pred);
+            succTot   += fixSpacing(succ);
+            minTot    += fixSpacing(min);
+            maxTot    += fixSpacing(max);
         }
 
         log("Size: " + names.length);
         log(sep);
-        log("            | LL               |  SK                |  BST             | RBT                  |");
+        log("            | LL                  |  SK                 |  BST                | RBT                 |");
         log(sep);
-        log("insert      | "+insert);
+        log("insert      | "+insertTot);
         log(sep);
-        log("search      | "+search);
+        log("search      | "+searchTot);
         log(sep);
-        log("predecessor | "+pred);
+        log("predecessor | "+predTot);
         log(sep);
-        log("successor   | "+succ);
+        log("successor   | "+succTot);
         log(sep);
-        log("minimum     | "+min);
+        log("minimum     | "+minTot);
         log(sep);
-        log("maximum     | "+max);
+        log("maximum     | "+maxTot);
         log(sep);
 
-        // Clear the hashmap for the next test.
+        // Clear the map for the next test.
         dict.clear();
     }
 
