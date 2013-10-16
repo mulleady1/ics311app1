@@ -155,12 +155,12 @@ public class RedBlackDynamicSet extends BST {
                     w.isRed(true);
                     this.rightRotate(w);
                     w = n.getP().getRight();
+                    w.isRed(n.getP().isRed());
+                    n.getP().isRed(false);
+                    w.getRight().isRed(false);
+                    this.leftRotate(n.getP());
+                    n = this.root;
                 }
-                w.isRed(n.getP().isRed());
-                n.getP().isRed(false);
-                w.getRight().isRed(false);
-                this.leftRotate(n.getP());
-                n = this.root;
             }
             else {
                 Node w = n.getP().getLeft();
@@ -179,12 +179,12 @@ public class RedBlackDynamicSet extends BST {
                     w.isRed(true);
                     this.leftRotate(w);
                     w = n.getP().getLeft();
+                    w.isRed(n.getP().isRed());
+                    n.getP().isRed(false);
+                    w.getLeft().isRed(false);
+                    this.rightRotate(n.getP());
+                    n = this.root;
                 }
-                w.isRed(n.getP().isRed());
-                n.getP().isRed(false);
-                w.getLeft().isRed(false);
-                this.rightRotate(n.getP());
-                n = this.root;
             }
         }
         n.isRed(false);
