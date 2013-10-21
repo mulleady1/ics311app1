@@ -1,0 +1,62 @@
+TEST RESULTS
+------------
+My results can be seen in the output_km.txt file.  I have eight output tables 
+corresponding to the sorted and unsorted files of 100, 1000, 10000, and 100000 names.  
+I could not successfully run the file of one million names on my desktop, on my two 
+laptops, nor on uhunix; therefore I do not have results for that quantity.
+
+I will use the acronyms LL for DLLDynamicSet, SK for SkipListDynamicSet, BST for
+BSTDynamicSet, and RBT for RedBlackDynamicSet.
+
+Let's talk about the sorted files first.
+
+For the sorted files, the best average-case running time for insertions was done by
+my RBT.  It makes sense that the RBT would beat the BST because the runtime of insertion
+is dependent on the height of the tree, and RBTs have height of Θ(lg n) while BSTs have
+max height of (n-1)/2.
+
+The fastest average running times for search, predecessor, and successor were divided two 
+ways: for input sizes 100 and 1000, RBT was the fastest.  However, for input sizes 
+10000 and 100000, my SK was the fastest.  Additionally, for the four different inputs, 
+the SK performed faster on average with the 100000 size input than on any of the smaller 
+inputs!  These follow theoretical analyses, because the RBT and SK measured runtimes are similar,
+and so are their asymptotic runtimes (O(lg n) for skip lists and Θ(lg n) for red-black trees).  
+Also, BST didn't come in with fastest average-case runtime here because we're dealing with
+sorted input: binary search trees' arch nemesis.
+
+For the minimum operation, BST was the fastest on the first three input sizes.  On the
+fourth, SK was the fastest.  Similarly, RBT was the fastest on the first three inputs,
+with SK again being the fastest on the largest input.
+
+Now let's discuss the unsorted files.
+
+For the unsorted files, the best average-case running time for insertions was done by
+my BST, not by my RBT.  This makes sense, because RBT has larger constant-time operations
+associated with insertions (i.e. RbInsertFixup).  
+
+The fastest average running times for search, predecessor, and successor were again divided 
+two ways: for input sizes 100 RBT was the fastest.  For the remaining inputs, my BST was the
+fastest.  RBT was not far behind though, nor was SK.  The fastest average-case running times
+for minimum and maximum were shared by SK, BST, and RBT.
+
+All of these running times align with the theoretical asymptotic running times of these
+data structures and algorithms.  Skip lists and BSTs have O(lg n) running time for their
+operations, and RBTs have Θ(lg n) runtimes.  My 8 output tables show that SK, BST, and RBT
+have very similar average case runtimes.  However, linked lists have O(n) runtimes.  Thus, 
+it is no surprise that LL did not win any speed competitions in these analyses.
+
+
+CODE TESTING
+------------
+I used JUnit to run unit tests with assertions that verified features such as:
+
+- Inserting a key k, then searching for k would pass assertEquals.
+- Inserting several keys of known lexicographic order, then running min, max, succ,
+  and pred would return expected values to pass assertEquals.
+- Inserting n keys would pass assertEquals(n, size).
+- Inserting n keys, then deleting m < n keys would pass assertEquals(n-m, size).
+
+I did more testing by creating custom print methods for each ADT (expect LL), such that they 
+print their structure to the screen in ASCII art.  This way, I could graphically see that the 
+skip list was adding/removing levels and creating towers as needed, the BST was creating child 
+nodes properly, and the RBT was performing rotations as it should be.

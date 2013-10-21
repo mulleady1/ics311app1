@@ -36,11 +36,6 @@ package ics311km;
 public interface DynamicSet {
      
     /**
-     * Creates an instance of ADT DynamicSet and initializes it to the empty set.   
-     */
-    //public DynamicSet(); 
-
-    /**
      * @return  the number of elements currently in the set.
      */
     public int size();

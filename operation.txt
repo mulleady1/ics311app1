@@ -1,0 +1,14 @@
+To use Battle of the Dynamic Sets, you need to first compile and run the project according 
+to the first method in README.txt.  Upon running the project, you are given a menu that 
+looks like this:
+
+    Available commands: runtest insert search delete pred succ min max size p
+    Press q <Enter> to quit.
+    Enter a command: 
+
+The purpose of this menu, as well as the application, is to perform operations on the
+different implementations of the DynamicSet interface.  You can perform operations
+individually by using all but the first 'Available commands'.  For example, you can INSERT
+a key into the sets, and then SEARCH for said key.  You can insert multiple keys, then run
+predecessor (PRED), successor (SUCC), minimum (MIN), maximimum (MAX), SIZE, and print (P)
+operations.  To run all operations and view their running times, do a RUNTEST.

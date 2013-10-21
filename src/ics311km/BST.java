@@ -43,9 +43,13 @@ public abstract class BST implements DynamicSet {
         return this.size;
     }
 
-    public abstract void insert(KeyType k, Object e);
+    public void insert(KeyType k, Object e) {
+        this.nodeInsert(k, false);
+    }
                                         
-    public abstract void delete(KeyType k);
+    public void delete(KeyType k) {
+        this.nodeDelete(k, false);
+    }
 
     public Object search(KeyType k) {
         Node n = this.nodeSearch(k);
@@ -205,7 +209,7 @@ public abstract class BST implements DynamicSet {
         return null;
     }
 
-    // Straight from the book.
+    // Simply a translation from CLRS pseudocode to Java.
     private void transplant(Node oldNode, Node newNode) {
         if (oldNode.getP() == null)
             this.root = newNode;

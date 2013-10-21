@@ -40,8 +40,11 @@ import java.util.Random;
 
 public class Driver implements Const {
 
+    // The array with the names in the input file.
     private static String[] names;
+    // A map that keeps track of the run times for the output table.
     private static Map<String, List<Long>> dict;
+    // The DynamicSet array that holds my different implementations of DynamicSet.
     private static DynamicSet[] dynamicSets; 
 
     public static void main(String[] args) {
@@ -54,6 +57,7 @@ public class Driver implements Const {
         // Create a map for organizing output.
         dict = new HashMap<String, List<Long>>();
         Scanner scan = new Scanner(System.in);
+        // Fill up DynamicSet array.
         dynamicSets = new DynamicSet[NUM_DATA_STRUCTURES];
         dynamicSets[0] = new DLLDynamicSet();
         dynamicSets[1] = new SkipListDynamicSet();
@@ -62,7 +66,7 @@ public class Driver implements Const {
         try {
             // App interface.
             while (true) {
-                // If multiple arguments were passed then we're bypassing the normal interface.
+                // Quick-n-dirty bypass of the normal interface when using the 'runtests' script.
                 if (args.length > 1) {
                     runCommand(args[1]);
                     runCommand(args[2]);
@@ -72,7 +76,7 @@ public class Driver implements Const {
                     log("Press q <Enter> to quit.");
                     System.out.print("Enter a command: ");
                     // Execute command.
-                    runCommand(scan.nextLine().trim());
+                    runCommand(scan.nextLine().trim().toLowerCase());
                 }
             }
         }
@@ -167,8 +171,9 @@ public class Driver implements Const {
             // Add 'insert' runtimes to map.
             dict.put(INSERT+i, insertTimes);
             Random rand = new Random();
+            int tenPercentSize = names.length / 10;
             // For loop for 'search'.
-            for (int j = 0; j < LIMIT; j++) {
+            for (int j = 0; j < tenPercentSize; j++) {
                 int randomInt = rand.nextInt(names.length);
                 KeyType k = new KeyType(names[randomInt]);
                 start = System.nanoTime();
@@ -317,7 +322,7 @@ public class Driver implements Const {
     }
 
     private static String fixSpacing(String s) {
-        while (s.length() < 22) {
+        while (s.length() < 24) {
             s += " ";
         }
         s += "| ";
@@ -331,7 +336,7 @@ public class Driver implements Const {
                succTot   = "", 
                minTot    = "", 
                maxTot    = "";
-        String sep = "------------------------------------------------------------------------------------------------------------";
+        String sep = "--------------------------------------------------------------------------------------------------------------------";
         for (int i = 0; i < dynamicSets.length; i++) {
             // Compute results.
             long[] insertResults = computeResults(INSERT+i);
@@ -357,7 +362,7 @@ public class Driver implements Const {
 
         log("Size: " + names.length);
         log(sep);
-        log("            | LL                    |  SK                   |  BST                  | RBT                   |");
+        log("            | LL                      | SK                      | BST                     | RBT                     |");
         log(sep);
         log("insert      | "+insertTot);
         log(sep);

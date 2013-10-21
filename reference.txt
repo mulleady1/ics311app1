@@ -1,0 +1,48 @@
+The following is a high-level overview of my source files.
+
+DynamicSet Implementations
+    DLLDynamicSet
+        This class has two instance variables: head and size. Upon inserting a key k into
+        this set, the insert method starts at the head and moves right until it finds the 
+        location to insert k in proper lexicographic order. Every insert and delete takes
+        care of setting appropriate pointers.
+    SkipListDynamicSet
+        This class has three instance variables: head, size, and numLevels. Upon inserting
+        a key k into this set, the insert method starts and the head and checks to see if
+        the current node's right node's key is less than k. If so, the current node "moves 
+        right"; if not, the current node "moves down" one level. This continues until it
+        reaches the bottom level and finds the insertion point. A coin is flipped on every
+        insert to see if k will build a tower of nodes. Every insert and delete takes care
+        of setting appropriate pointers, adding/removing levels, and incrementing/decrementing
+        numLevels.
+    BSTDynamicSet
+        This class has two instance variables: root and size. Most of its behaviors are defined
+        in BST.java, its superclass. Upon inserting a key k into the tree, the insert method
+        starts at the root, moving down the tree until it finds the appropriate leaf node in
+        which to insert k. Every insert and delete takes care of setting pointers, and deleting
+        a node deals with transplanting nodes as necessary.
+    RedBlackDynamicSet
+        This class has two instance variables: root and size. Most of its behaviors are defined
+        in BST.java, its superclass. Upon inserting a key k into the tree, the insert method
+        starts at the root, moving down the tree until it finds the appropriate leaf node in
+        which to insert k, and performing insertFix to maintain the properties of red-black
+        trees. Every insert and delete takes care of setting pointers, and deleting a node deals 
+        with transplanting nodes as necessary as well as performing deleteFix to maintain red-
+        black properties.
+Nodes
+    DLLNode
+        Each implementation of DynamicSet uses its respective implementation of the abstract class
+        Node. DLLDynamicSet uses DLLNode, which has getters and setters for left, right, and key. 
+    QuadNode
+        SkipListDynamicSet uses QuadNode, which has getters and setters for left, right, above,
+        below, and key.
+    BSTNode
+        BSTDynamicSet uses BSTNode, which has getters and setters for left, right, p, and key.
+    RBNode
+        RedBlackDynamicSet uses RBNode, which has getters and setters for left, right, p, key,
+        and isRed.
+Driver
+    The main method of my project is in Driver.java. main calls loadData to put all the names
+    from the input file into an array. main then enters an infinite while loop, which serves as
+    the UI for the app. In the loop, the user enters commands to perform operations on the various
+    dynamic sets. 

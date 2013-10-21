@@ -40,19 +40,25 @@ public class RedBlackDynamicSet extends BST {
         this.size = 0;
     }
 
+    // Use nodeInsert from BST just like BSTDynamicSet does, then
+    // make n red and call insertFix.
     public void insert(KeyType k, Object e) {
         Node n = this.nodeInsert(k, true);
         n.isRed(true);
         this.insertFix(n);
     }
 
+    // Use nodeDelete from BST just like BSTDynamicSet does, then
+    // call deleteFix if necessary.
     public void delete(KeyType k) {
         Node n = this.nodeDelete(k, true);
         if (n != null)
             this.deleteFix(n);
     }
 
-    // Very similar to RB-INSERT-FIXUP from the book.
+    // The remaining methods have no documentation, as they are merely a
+    // translation from CLRS pseudocode to Java.
+
     private void insertFix(Node n) {
         while (n != this.root && n.getP() != this.root && n.getP().isRed()) {
             if (n.getP() == n.getP().getP().getLeft()) {

@@ -39,12 +39,4 @@ public class BSTDynamicSet extends BST {
         this.size = 0;
         this.root = null;
     }
-
-    public void insert(KeyType k, Object e) {
-        this.nodeInsert(k, false);
-    }
-
-    public void delete(KeyType k) {
-        this.nodeDelete(k, false);
-    }
 }
